@@ -1,0 +1,391 @@
+/* ==============================================
+   NAVIGATION FEATURES CSS - UPDATED WITH DESIGN SYSTEM
+   ============================================== */
+
+/* ==============================================
+   COMPASS CONTAINER
+   ============================================== */
+
+.compass-container {
+  position: fixed;
+  top: 120px;
+  right: var(--space-md);
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+/* Round Compass Display */
+.compass-display {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Compass Ring with Cardinals */
+.compass-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+/* Cardinal Directions */
+.compass-cardinal {
+  position: absolute;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-dark);
+}
+
+.compass-cardinal.north {
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}
+
+.compass-cardinal.east {
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.compass-cardinal.south {
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.compass-cardinal.west {
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Compass Needle */
+.compass-needle {
+  width: 4px;
+  height: 30px;
+  background: linear-gradient(to top, #666 0%, #666 50%, var(--color-danger) 50%, var(--color-danger) 100%);
+  position: absolute;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
+  
+  /* Center the needle properly */
+  top: 50%;
+  left: 50%;
+  margin-top: -15px;
+  margin-left: -2px;
+  transform-origin: center center;
+  transition: transform var(--transition-base);
+}
+
+/* Compass Center Dot */
+.compass-center {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--color-text-primary);
+  border-radius: var(--radius-full);
+  border: 2px solid white;
+  z-index: 3;
+}
+
+/* ==============================================
+   HEADING DISPLAY
+   ============================================== */
+
+.heading-display {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  min-width: 80px;
+}
+
+.heading-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-success);
+  font-family: var(--font-family-mono);
+  line-height: 1;
+}
+
+.heading-label {
+  font-size: var(--font-size-xs);
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--space-xs);
+}
+
+/* ==============================================
+   RECENTER BUTTON
+   ============================================== */
+
+.recenter-btn {
+  position: fixed;
+  bottom: 200px;
+  right: var(--space-sm);
+  width: 50px;
+  height: 50px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  z-index: var(--z-dropdown);
+}
+
+.recenter-btn:hover {
+  background: var(--color-surface-hover);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+.recenter-btn:active {
+  transform: scale(0.95);
+}
+
+.recenter-icon {
+  font-size: var(--font-size-2xl);
+  animation: pulse-icon 2s infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* ==============================================
+   RECORDING INDICATOR - PULSATING
+   ============================================== */
+
+.recording-indicator {
+  position: fixed;
+  top: 170px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-danger);
+  color: white;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  display: none;
+  align-items: center;
+  gap: var(--space-sm);
+  z-index: 5000;
+  box-shadow: 0 2px 12px rgba(231, 76, 60, 0.5);
+  animation: pulse-recording 2s infinite;
+}
+
+.recording-indicator:not(.hidden) {
+  display: flex;
+}
+
+.recording-dot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: var(--radius-full);
+  animation: blink 1s infinite;
+}
+
+.recording-text {
+  letter-spacing: 1px;
+}
+
+@keyframes pulse-recording {
+  0%, 100% {
+    box-shadow: 0 2px 12px rgba(231, 76, 60, 0.5);
+  }
+  50% {
+    box-shadow: 0 2px 20px rgba(231, 76, 60, 0.8), 
+                0 0 0 10px rgba(231, 76, 60, 0);
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* ==============================================
+   LOCATION ARROW MARKER
+   ============================================== */
+
+.location-marker-arrow {
+  background: transparent;
+  border: none;
+}
+
+.location-arrow {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  animation: pulse-location 2s infinite;
+}
+
+@keyframes pulse-location {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+#direction-arrow {
+  transition: transform var(--transition-base);
+}
+
+/* ==============================================
+   PERMANENT FIX FOR COMPASS VISIBILITY
+   ============================================== */
+
+body #compass,
+#compass {
+  display: flex !important;
+  width: 80px !important;
+  height: 80px !important;
+  min-width: 80px !important;
+  min-height: 80px !important;
+  background: white !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: 3px solid var(--color-primary) !important;
+  border-radius: var(--radius-full) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 99999 !important;
+  position: relative !important;
+  box-shadow: var(--shadow-lg) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+/* Ensure internal elements are visible */
+#compass-needle,
+#compass .compass-needle {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  top: 50% !important;
+  left: 50% !important;
+  margin-top: -15px !important;
+  margin-left: -2px !important;
+  transform-origin: center center !important;
+}
+
+#compass .compass-cardinal,
+.compass-cardinal {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+#compass .compass-center,
+.compass-center {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* ==============================================
+   MOBILE RESPONSIVE
+   ============================================== */
+
+@media (max-width: 768px) {
+  .compass-container {
+    top: 130px;
+    right: var(--space-md);
+  }
+
+  .compass-display {
+    width: 70px;
+    height: 70px;
+  }
+
+  .compass-needle {
+    height: 26px;
+  }
+
+  .heading-display {
+    padding: var(--space-xs) var(--space-md);
+    min-width: 70px;
+  }
+
+  .heading-value {
+    font-size: var(--font-size-lg);
+  }
+
+  .recenter-btn {
+    bottom: 150px;
+    right: var(--space-sm);
+    width: 46px;
+    height: 46px;
+  }
+
+  .recording-indicator {
+    top: 140px;
+    font-size: var(--font-size-xs);
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  body #compass,
+  #compass {
+    width: 70px !important;
+    height: 70px !important;
+    min-width: 70px !important;
+    min-height: 70px !important;
+  }
+}
+
+/* ==============================================
+   ACCESSIBILITY
+   ============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .compass-needle,
+  .recenter-icon,
+  .location-arrow,
+  .recording-indicator,
+  .recording-dot {
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .compass-display {
+    border-width: 4px;
+  }
+
+  .recenter-btn {
+    border-width: 3px;
+  }
+}

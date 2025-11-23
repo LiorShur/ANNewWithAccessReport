@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Access Nature - Making outdoor spaces accessible for everyone">
+  <title>Access Nature - Making Trails Accessible</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+  
+  <!-- 1. Design System FIRST! -->
+  <link rel="stylesheet" href="src/css/design-system.css">
+
+  <!-- 2. Component Systems -->
+  <link rel="stylesheet" href="src/css/buttons.css">
+  <link rel="stylesheet" href="src/css/toasts.css">
+  <link rel="stylesheet" href="src/css/modals.css">
+  <link rel="stylesheet" href="src/css/loading-states.css">
+  <link rel="stylesheet" href="src/css/focus-states.css">
+
+  <!-- 3. Base & Layout -->
+  <link rel="stylesheet" href="src/css/base.css">
+  <link rel="stylesheet" href="src/css/landing.css">
+
+  <!-- 4. Page-Specific -->
+  <link rel="stylesheet" href="src/css/components.css">
+  <link rel="stylesheet" href="src/css/auth.css">
+  <link rel="stylesheet" href="src/css/ui-polish.css">
+  <link rel="stylesheet" href="src/css/themes.css">
+  <link rel="stylesheet" href="src/css/access-report-styles.css">
+  
+  <!-- Emergency scroll fix -->
+  <style>
+    html, body {
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+    }
+    
+    body {
+      margin: 0;
+      padding-top: 60px;
+    }
+    
+    .hero-section,
+    .main-navigation,
+    .community-section,
+    .featured-section,
+    .footer-section {
+      position: relative !important;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile-First Top Navigation -->
+  <nav class="top-nav">
+    <!-- Brand/Logo -->
+    <a href="index.html" class="nav-brand">
+      <span class="nav-brand-icon">🌲</span>
+      <span>Access Nature</span>
+    </a>
+
+    <!-- Hamburger Menu Button -->
+    <button 
+      class="menu-toggle" 
+      id="menuToggle" 
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="navMenu"
+    >
+      <div class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
+
+    <!-- Navigation Menu -->
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html" class="nav-link active">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </a>
+
+      <a href="tracker.html" class="nav-link">
+        <span class="nav-icon">📍</span>
+        <span class="nav-label">Track Trail</span>
+      </a>
+
+      <a href="#" onclick="openTrailBrowser(); return false;" class="nav-link">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">Browse Trails</span>
+      </a>
+
+      <button class="nav-link" id="authNavBtn" type="button">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label" id="authNavLabel">Sign In</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-background"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">🌲 Access Nature</h1>
+      <p class="hero-subtitle">Making outdoor spaces accessible for everyone</p>
+      
+      <!-- Auth Status (kept for backward compatibility) -->
+      <div id="authStatusBar" class="auth-status-landing">
+        <div id="userInfo" class="user-info hidden">
+          <span class="user-greeting">Welcome back, <span id="userEmail"></span>!</span>
+          <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+        </div>
+        <div id="authPrompt" class="auth-prompt">
+          <button id="showAuthBtn" class="btn btn-secondary">Sign In</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation -->
+  <div class="main-navigation">
+    <div class="nav-container">
+      
+      <div class="nav-card" onclick="window.location.href='reports.html'">
+  <div class="nav-card-icon">⚠️</div>
+  <h3 class="nav-card-title">Accessibility Reports</h3>
+  <p class="nav-card-description">
+    Report and view accessibility barriers in outdoor spaces and urban areas. 
+    Help build a more accessible world.
+  </p>
+  <div class="nav-card-footer">
+    <span class="nav-card-badge">🗺️ Interactive Map</span>
+    <span class="nav-card-badge">📊 Real-time Data</span>
+  </div>
+</div>
+
+      <!-- Search Trail Guides -->
+      <div class="nav-card discover-card">
+        <div class="nav-card-icon">🔍</div>
+        <h2>Discover Accessible Trails</h2>
+        <p>Browse community-contributed accessible trail guides with detailed accessibility information, photos, and reviews.</p>
+        
+        <div class="nav-card-features">
+          <span class="feature-tag">♿ Wheelchair Access</span>
+          <span class="feature-tag">📷 Photos & Notes</span>
+          <span class="feature-tag">⭐ Community Reviews</span>
+          <span class="feature-tag">🗺️ Interactive Maps</span>
+        </div>
+        
+        <button class="btn btn-primary btn-lg" onclick="openTrailBrowser()">
+          🔍 Browse Trail Guides
+        </button>
+        
+        <div class="quick-search">
+          <input type="text" id="quickSearch" placeholder="Quick search trails..." maxlength="50" class="form-input">
+          <button onclick="quickSearch()" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+
+      <!-- Track New Trail -->
+      <div class="nav-card track-card">
+        <div class="nav-card-icon">📍</div>
+        <h2>Map a New Trail</h2>
+        <p>Use GPS tracking to document new accessible routes. Record accessibility features, take photos, and create trail guides for the community.</p>
+        
+        <div class="nav-card-features">
+          <span class="feature-tag">📱 GPS Tracking</span>
+          <span class="feature-tag">📝 Accessibility Survey</span>
+          <span class="feature-tag">📷 Photo Documentation</span>
+          <span class="feature-tag">☁️ Cloud Sync</span>
+        </div>
+        
+        <button class="btn btn-success btn-lg" onclick="openTracker()">
+          📍 Start Tracking
+        </button>
+        
+        <div class="tracker-stats">
+          <div class="stat-item">
+            <span class="stat-number" id="totalRoutes">0</span>
+            <span class="stat-label">Routes Mapped</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="totalDistance">0</span>
+            <span class="stat-label">km Documented</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Community Stats Section -->
+  <div class="community-section">
+    <div class="community-container">
+      <h3>🌍 Community Impact</h3>
+      <div class="community-stats">
+        <div class="community-stat">
+          <span class="stat-big" id="publicGuides">0</span>
+          <span class="stat-desc">Public Trail Guides</span>
+        </div>
+        <div class="community-stat">
+          <span class="stat-big" id="totalKm">0</span>
+          <span class="stat-desc">Kilometers Mapped</span>
+        </div>
+        <div class="community-stat">
+          <span class="stat-big" id="accessibleTrails">0</span>
+          <span class="stat-desc">Wheelchair Accessible</span>
+        </div>
+        <div class="community-stat">
+          <span class="stat-big" id="totalUsers">0</span>
+          <span class="stat-desc">Contributors</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Trails -->
+  <div class="featured-section">
+    <div class="featured-container">
+      <h3>⭐ Featured Accessible Trails</h3>
+      <div id="featuredTrails" class="featured-grid">
+        <!-- Dynamically populated -->
+      </div>
+      <button class="btn btn-primary load-more-btn" onclick="loadMoreFeatured()">Load More Trails</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-section">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h4>🌲 Access Nature</h4>
+          <p>Making outdoor spaces accessible for everyone</p>
+        </div>
+        <div class="footer-links">
+          <a href="#" onclick="showAbout(); return false;">About</a>
+          <a href="#" onclick="showPrivacy(); return false;">Privacy</a>
+          <a href="#" onclick="showContact(); return false;">Contact</a>
+          <a href="#" onclick="showHelp(); return false;">Help</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Access Nature. Making trails accessible for all.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Complete Trail Browser Modal -->
+  <div id="trailBrowserModal" class="trail-browser-modal hidden">
+    <div class="modal-backdrop" onclick="closeTrailBrowser()"></div>
+    <div class="trail-browser-container">
+      <div class="trail-browser-header">
+        <h2>🔍 Browse Accessible Trails</h2>
+        <button class="modal-close-btn" onclick="closeTrailBrowser()">✕</button>
+      </div>
+      
+      <div class="trail-browser-search">
+        <input 
+          type="text" 
+          id="trailSearch" 
+          placeholder="Search trails by name, location, or features..." 
+          class="form-input"
+          onkeypress="if(event.key==='Enter') searchTrails()"
+        >
+        <button onclick="searchTrails()" class="btn btn-primary">🔍 Search</button>
+      </div>
+
+      <div class="trail-browser-filters">
+        <h3>Filters</h3>
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="filterWheelchair" onchange="applyFilters()">
+            ♿ Wheelchair Accessible
+          </label>
+          <label>
+            <input type="checkbox" id="filterPaved" onchange="applyFilters()">
+            🛤️ Paved Surface
+          </label>
+          <label>
+            <input type="checkbox" id="filterPhotos" onchange="applyFilters()">
+            📷 Has Photos
+          </label>
+        </div>
+      </div>
+
+      <div class="trail-browser-results">
+        <div class="results-header">
+          <span id="resultsCount">0 trails found</span>
+          <button onclick="loadMoreResults()" class="btn btn-secondary btn-sm" id="loadMoreBtn">Load More</button>
+        </div>
+        <div id="trailResults" class="trail-results-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="auth-modal hidden">
+    <div class="auth-modal-backdrop" onclick="closeAuthModal()"></div>
+    <div class="auth-modal-container">
+      <div class="auth-modal-header">
+        <h2>Welcome to Access Nature</h2>
+        <button class="auth-modal-close" onclick="closeAuthModal()">✕</button>
+      </div>
+      
+      <div class="auth-modal-content">
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-form active">
+          <div class="auth-form-header">
+            <h3>Sign In to Your Account</h3>
+            <p>Continue your accessibility mapping journey</p>
+          </div>
+          
+          <form class="auth-inputs">
+            <div class="input-group">
+              <input type="email" id="loginEmail" placeholder="Email address" required>
+              <span class="input-icon">📧</span>
+            </div>
+            
+            <div class="input-group">
+              <input type="password" id="loginPassword" placeholder="Password" required>
+              <span class="input-icon">🔒</span>
+            </div>
+            
+            <button type="submit" id="loginBtn" class="auth-submit-btn">
+              <span class="btn-text">Sign In</span>
+            </button>
+          </form>
+          
+          <div class="auth-divider">
+            <span>or</span>
+          </div>
+          
+          <button id="googleLoginBtn" class="google-btn">
+            <span>Continue with Google</span>
+          </button>
+          
+          <div class="auth-switch">
+            <p>Don't have an account? <button type="button" onclick="switchToSignup()" class="switch-btn">Sign up</button></p>
+          </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" class="auth-form">
+          <div class="auth-form-header">
+            <h3>Create Your Account</h3>
+            <p>Join the community making nature accessible</p>
+          </div>
+          
+          <form class="auth-inputs">
+            <div class="input-group">
+              <input type="text" id="signupName" placeholder="Full name" required>
+              <span class="input-icon">👤</span>
+            </div>
+            
+            <div class="input-group">
+              <input type="email" id="signupEmail" placeholder="Email address" required>
+              <span class="input-icon">📧</span>
+            </div>
+            
+            <div class="input-group">
+              <input type="password" id="signupPassword" placeholder="Create password" required>
+              <span class="input-icon">🔒</span>
+            </div>
+            
+            <button type="submit" id="signupBtn" class="auth-submit-btn">
+              <span class="btn-text">Create Account</span>
+            </button>
+          </form>
+          
+          <div class="auth-divider">
+            <span>or</span>
+          </div>
+          
+          <button id="googleSignupBtn" class="google-btn">
+            <span>Continue with Google</span>
+          </button>
+          
+          <div class="auth-switch">
+            <p>Already have an account? <button type="button" onclick="switchToLogin()" class="switch-btn">Sign in</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading...</div>
+  </div>
+
+  <!-- External Libraries -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Load UI helpers as modules -->
+  <script type="module">
+    import toast from './src/helpers/toasts.js';
+    import modal from './src/helpers/modals.js';
+    import { showLoading, hideLoading } from './src/helpers/loading.js';
+    
+    // Make globally available
+    window.toast = toast;
+    window.modal = modal;
+    window.showLoading = showLoading;
+    window.hideLoading = hideLoading;
+    
+    console.log('✅ UI systems loaded');
+  </script>
+
+  <!-- Your App Scripts -->
+  <script type="module" src="src/landing.js"></script>
+  <script type="module" src="src/features/auth.js"></script>
+
+  <!-- Navigation and Helper Scripts -->
+  <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+      
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', () => {
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+          menuToggle.classList.toggle('active');
+          navMenu.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+        });
+        
+        // Close menu when clicking nav links
+        navMenu.querySelectorAll('.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('menu-open');
+          });
+        });
+      }
+
+      // Connect auth nav button to auth modal
+      const authNavBtn = document.getElementById('authNavBtn');
+      const authNavLabel = document.getElementById('authNavLabel');
+      
+      if (authNavBtn) {
+        authNavBtn.addEventListener('click', () => {
+          const showAuthBtn = document.getElementById('showAuthBtn');
+          const logoutBtn = document.getElementById('logoutBtn');
+          
+          if (showAuthBtn && !showAuthBtn.closest('.hidden')) {
+            showAuthBtn.click();
+          } else if (logoutBtn && !logoutBtn.closest('.hidden')) {
+            logoutBtn.click();
+          }
+        });
+
+        // Update label based on auth state
+        const observer = new MutationObserver(() => {
+          const userInfo = document.getElementById('userInfo');
+          if (userInfo && !userInfo.classList.contains('hidden')) {
+            authNavLabel.textContent = 'Sign Out';
+          } else {
+            authNavLabel.textContent = 'Sign In';
+          }
+        });
+
+        const authStatusBar = document.getElementById('authStatusBar');
+        if (authStatusBar) {
+          observer.observe(authStatusBar, { 
+            attributes: true, 
+            childList: true, 
+            subtree: true 
+          });
+        }
+      }
+    });
+
+    // Navigation functions
+    function openTracker() {
+      window.location.href = 'tracker.html';
+    }
+
+    function openTrailBrowser() {
+      const modal = document.getElementById('trailBrowserModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
+    }
+
+    function closeTrailBrowser() {
+      const modal = document.getElementById('trailBrowserModal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function quickSearch() {
+      const query = document.getElementById('quickSearch')?.value;
+      if (query && query.trim()) {
+        openTrailBrowser();
+        const trailSearch = document.getElementById('trailSearch');
+        if (trailSearch) {
+          trailSearch.value = query;
+          setTimeout(() => {
+            if (typeof searchTrails === 'function') {
+              searchTrails();
+            }
+          }, 100);
+        }
+      } else {
+        if (typeof toast !== 'undefined') {
+          toast.warning('Please enter a search term');
+        }
+      }
+    }
+
+    function searchTrails() {
+      if (window.LandingPageController && window.LandingPageController.searchTrails) {
+        window.LandingPageController.searchTrails();
+      }
+    }
+
+    function applyFilters() {
+      if (window.LandingPageController && window.LandingPageController.applyFilters) {
+        window.LandingPageController.applyFilters();
+      }
+    }
+
+    function loadMoreResults() {
+      if (window.LandingPageController && window.LandingPageController.loadMoreResults) {
+        window.LandingPageController.loadMoreResults();
+      }
+    }
+
+    function loadMoreFeatured() {
+      if (window.LandingPageController && window.LandingPageController.loadMoreFeatured) {
+        window.LandingPageController.loadMoreFeatured();
+      } else {
+        if (typeof toast !== 'undefined') {
+          toast.info('Loading trail guides...');
+        }
+      }
+    }
+
+    
+
+    // Footer links
+    function showAbout() {
+      if (typeof modal !== 'undefined') {
+        modal.alert(
+          'Access Nature is a community-driven platform dedicated to making outdoor spaces accessible for everyone.',
+          'About Access Nature'
+        );
+      }
+    }
+
+    function showPrivacy() {
+      if (typeof modal !== 'undefined') {
+        modal.alert(
+          'Your privacy is important to us. We only collect data necessary to provide our services.',
+          'Privacy Policy'
+        );
+      }
+    }
+
+    function showContact() {
+      if (typeof modal !== 'undefined') {
+        modal.alert(
+          'Email: support@accessnature.org',
+          'Contact Us'
+        );
+      }
+    }
+
+    function showHelp() {
+      if (typeof modal !== 'undefined') {
+        modal.alert(
+          'Need help? Contact support at support@accessnature.org',
+          'Help & Support'
+        );
+      }
+    }
+  </script>
+  <script>
+// Modal close fix
+function closeTrailBrowser() {
+  const modal = document.getElementById('trailBrowserModal');
+  if (modal) {
+    modal.classList.add('hidden');
+  }
+}
+
+function openTrailBrowser() {
+  const modal = document.getElementById('trailBrowserModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+  }
+}
+
+// Attach close handlers
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('trailBrowserModal');
+  const closeBtn = modal?.querySelector('.modal-close-btn');
+  const backdrop = modal?.querySelector('.modal-backdrop');
+  
+  // Close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeTrailBrowser();
+    });
+  }
+  
+  // Backdrop click
+  if (backdrop) {
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) {
+        closeTrailBrowser();
+      }
+    });
+  }
+  
+  // Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+      closeTrailBrowser();
+    }
+  });
+  
+  // Ensure hidden on load
+  if (modal && !modal.classList.contains('hidden')) {
+    modal.classList.add('hidden');
+  }
+});
+</script>
+
+</body>
+</html>

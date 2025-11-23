@@ -1,0 +1,405 @@
+/* ==============================================
+   ACCESS NATURE - FOCUS STATES & KEYBOARD NAV
+   Accessibility-first keyboard navigation
+   
+   File: src/css/focus-states.css
+   Version: 1.0
+   ============================================== */
+
+/* ==============================================
+   GLOBAL FOCUS STYLES
+   ============================================== */
+
+/* Remove default outline for mouse users */
+*:focus {
+  outline: none;
+}
+
+/* Show custom outline for keyboard users */
+*:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ==============================================
+   SPECIFIC ELEMENT FOCUS STYLES
+   ============================================== */
+
+/* Buttons */
+button:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Danger buttons */
+.btn-danger:focus-visible {
+  outline-color: var(--color-danger);
+  box-shadow: var(--shadow-focus-danger);
+}
+
+/* Links */
+a:focus-visible {
+  outline: 3px solid var(--color-info);
+  outline-offset: 2px;
+  text-decoration: underline;
+}
+
+/* Form inputs */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.2);
+}
+
+/* Invalid inputs */
+input:invalid:focus-visible,
+textarea:invalid:focus-visible {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+/* ==============================================
+   SKIP NAVIGATION LINK
+   ============================================== */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: var(--space-sm) var(--space-md);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  border-radius: 0 0 var(--radius-md) 0;
+  z-index: 10000;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid white;
+  outline-offset: -3px;
+}
+
+/* ==============================================
+   FOCUS-WITHIN STYLES
+   (Show parent when child is focused)
+   ============================================== */
+
+/* Card with focused element */
+.card:focus-within {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Form group with focused input */
+.form-group:focus-within label {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Navigation with focused link */
+.nav:focus-within {
+  background: var(--color-surface-hover);
+}
+
+/* ==============================================
+   HOVER + FOCUS COMBINED
+   (Better visual feedback)
+   ============================================== */
+
+button:hover:focus-visible,
+.btn:hover:focus-visible {
+  outline-width: 3px;
+  outline-offset: 3px;
+}
+
+/* ==============================================
+   FOCUS INDICATORS FOR CUSTOM CONTROLS
+   ============================================== */
+
+/* Custom Checkbox */
+.custom-checkbox input:focus-visible + label::before {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Custom Radio */
+.custom-radio input:focus-visible + label::before {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Toggle Switch */
+.toggle-switch input:focus-visible + .toggle-slider {
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.3);
+}
+
+/* Range Slider */
+input[type="range"]:focus-visible {
+  outline: none;
+}
+
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.3);
+}
+
+input[type="range"]:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.3);
+}
+
+/* ==============================================
+   FOCUS TRAP INDICATORS
+   (For modals, dialogs)
+   ============================================== */
+
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap::before,
+.focus-trap::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Modal focus indicator */
+.modal:focus-within {
+  box-shadow: var(--shadow-2xl), 0 0 0 3px rgba(74, 124, 89, 0.5);
+}
+
+/* ==============================================
+   KEYBOARD NAVIGATION HELPERS
+   ============================================== */
+
+/* Tab order indicator (for development) */
+[tabindex]:not([tabindex="-1"]) {
+  /* Only add indicator if needed for debugging */
+  /* position: relative; */
+}
+
+/* Disabled elements */
+[disabled],
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+[disabled]:focus,
+.disabled:focus {
+  outline: none;
+}
+
+/* ==============================================
+   INTERACTIVE ELEMENTS
+   ============================================== */
+
+/* Cards/Items that are clickable */
+.clickable:focus-visible,
+.card-interactive:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* List items */
+.list-item:focus-visible {
+  background: var(--color-surface-hover);
+  outline: 3px solid var(--color-primary);
+  outline-offset: -3px;
+}
+
+/* Menu items */
+.menu-item:focus-visible {
+  background: var(--color-primary-light);
+  color: white;
+  outline: none;
+}
+
+/* Dropdown items */
+.dropdown-item:focus-visible {
+  background: var(--color-primary-light);
+  color: white;
+  outline: none;
+}
+
+/* ==============================================
+   MAP CONTROLS FOCUS
+   ============================================== */
+
+/* Map floating buttons */
+.map-control-button:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 2px;
+  box-shadow: var(--shadow-lg), var(--shadow-focus);
+}
+
+/* Zoom controls */
+.leaflet-control-zoom a:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==============================================
+   TOAST NOTIFICATIONS FOCUS
+   ============================================== */
+
+.toast:focus-within {
+  box-shadow: var(--shadow-xl);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==============================================
+   SPECIAL STATES
+   ============================================== */
+
+/* Active (currently pressed) */
+button:active,
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Selected state */
+[aria-selected="true"]:focus-visible {
+  outline-width: 4px;
+}
+
+/* Expanded state */
+[aria-expanded="true"]:focus-visible {
+  background: var(--color-primary-light);
+  color: white;
+}
+
+/* ==============================================
+   KEYBOARD SHORTCUTS INDICATOR
+   ============================================== */
+
+.kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* ==============================================
+   FOCUS VISIBLE POLYFILL
+   (For older browsers)
+   ============================================== */
+
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
+
+.js-focus-visible .focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==============================================
+   HIGH CONTRAST MODE
+   ============================================== */
+
+@media (prefers-contrast: high) {
+  *:focus-visible {
+    outline-width: 4px;
+    outline-style: solid;
+  }
+  
+  button:focus-visible,
+  .btn:focus-visible {
+    outline-width: 4px;
+  }
+}
+
+/* ==============================================
+   REDUCED MOTION
+   ============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *:focus-visible {
+    transition: none;
+  }
+  
+  button:active,
+  .btn:active {
+    transform: none;
+  }
+}
+
+/* ==============================================
+   DARK MODE FOCUS STYLES
+   ============================================== */
+
+[data-theme="dark"] *:focus-visible {
+  outline-color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .skip-link {
+  background: var(--color-primary-light);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] input:focus-visible,
+[data-theme="dark"] textarea:focus-visible,
+[data-theme="dark"] select:focus-visible {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(107, 153, 117, 0.3);
+}
+
+/* ==============================================
+   MOBILE TOUCH FOCUS
+   ============================================== */
+
+@media (pointer: coarse) {
+  /* On touch devices, show a subtle focus ring */
+  *:focus-visible {
+    outline-width: 2px;
+    outline-offset: 1px;
+  }
+}
+
+/* ==============================================
+   PRINT STYLES
+   ============================================== */
+
+@media print {
+  *:focus,
+  *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ==============================================
+   UTILITIES FOR MANAGING FOCUS
+   ============================================== */
+
+/* Hide focus outline (use sparingly!) */
+.no-focus-outline:focus {
+  outline: none !important;
+}
+
+/* Force focus visible (for testing) */
+.force-focus-visible {
+  outline: 3px solid var(--color-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Focus trap container */
+.focus-trap-active {
+  position: relative;
+  isolation: isolate;
+}

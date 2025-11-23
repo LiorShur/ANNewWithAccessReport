@@ -1,0 +1,431 @@
+/* ==============================================
+   UI COMPONENTS - UPDATED WITH DESIGN SYSTEM
+   ============================================== */
+
+/* NOTE: Base button styles are in buttons.css
+   This file contains additional component styles */
+
+/* ==============================================
+   ROUND BUTTONS (Floating Action Buttons)
+   ============================================== */
+
+.round-button {
+  width: var(--button-height-base);
+  height: var(--button-height-base);
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  box-shadow: var(--shadow-lg);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.round-button:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-xl);
+}
+
+.round-button:active {
+  transform: scale(0.95);
+}
+
+/* ==============================================
+   NAVIGATION BUTTONS
+   ============================================== */
+
+.nav-button {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==============================================
+   STAT DISPLAYS
+   ============================================== */
+
+.stat-display {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+  color: white;
+}
+
+.separator {
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 var(--space-sm);
+}
+
+/* ==============================================
+   FILE INPUTS (Hidden)
+   ============================================== */
+
+input[type="file"] {
+  display: none;
+}
+
+/* ==============================================
+   COMPASS COMPONENTS
+   ============================================== */
+
+#compass-needle {
+  width: 2px;
+  height: 20px;
+  background: var(--color-danger);
+  transform-origin: bottom center;
+}
+
+#compass-center {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--color-text-primary);
+  border-radius: var(--radius-full);
+}
+
+/* ==============================================
+   TRAIL GUIDE MANAGEMENT
+   ============================================== */
+
+.guides-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: var(--space-md);
+}
+
+.guide-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-sm);
+  transition: all var(--transition-base);
+}
+
+.guide-item:hover {
+  background: var(--color-surface-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.guide-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+}
+
+.guide-visibility {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.guide-public {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.guide-private {
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+.guide-meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.guide-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.guide-btn {
+  padding: var(--space-xs) var(--space-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.guide-btn-view {
+  background: var(--color-info);
+  color: white;
+}
+
+.guide-btn-view:hover {
+  background: var(--color-info-dark);
+  transform: translateY(-1px);
+}
+
+.guide-btn-toggle {
+  background: var(--color-success);
+  color: white;
+}
+
+.guide-btn-toggle:hover {
+  background: var(--color-success-dark);
+  transform: translateY(-1px);
+}
+
+.guide-btn-delete {
+  background: var(--color-danger);
+  color: white;
+}
+
+.guide-btn-delete:hover {
+  background: var(--color-danger-dark);
+  transform: translateY(-1px);
+}
+
+/* ==============================================
+   CARDS
+   ============================================== */
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.card-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.card-body {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-base);
+}
+
+/* ==============================================
+   BADGES
+   ============================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+}
+
+.badge-primary {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.badge-success {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.badge-danger {
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+.badge-warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+.badge-info {
+  background: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+/* ==============================================
+   DIVIDERS
+   ============================================== */
+
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-md) 0;
+}
+
+.divider-vertical {
+  width: 1px;
+  height: 100%;
+  background: var(--color-border);
+  margin: 0 var(--space-md);
+}
+
+/* ==============================================
+   FORM ELEMENTS
+   ============================================== */
+
+.form-group {
+  margin-bottom: var(--space-md);
+}
+
+.form-label {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-primary);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-help {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-hint);
+  margin-top: var(--space-xs);
+}
+
+.form-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  margin-top: var(--space-xs);
+}
+
+/* ==============================================
+   MOBILE RESPONSIVE
+   ============================================== */
+
+@media (max-width: 768px) {
+  .round-button {
+    width: 38px;
+    height: 38px;
+    font-size: var(--font-size-base);
+  }
+
+  .nav-button {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 10px;
+  }
+
+  .stat-display {
+    font-size: var(--font-size-sm);
+  }
+
+  .guides-list {
+    max-height: 250px;
+  }
+
+  .guide-item {
+    padding: var(--space-sm);
+  }
+
+  .guide-actions {
+    flex-direction: column;
+  }
+
+  .guide-btn {
+    width: 100%;
+  }
+}
+
+/* ==============================================
+   DARK MODE SUPPORT
+   ============================================== */
+
+[data-theme="dark"] .round-button {
+  background: rgba(50, 50, 50, 0.9);
+}
+
+[data-theme="dark"] .nav-button {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .guide-item {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .guide-item:hover {
+  background: var(--color-surface-hover);
+}
+
+/* ==============================================
+   ACCESSIBILITY
+   ============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .round-button,
+  .nav-button,
+  .guide-item,
+  .guide-btn {
+    transition: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .round-button,
+  .nav-button,
+  .guide-btn {
+    border: 2px solid currentColor;
+  }
+}

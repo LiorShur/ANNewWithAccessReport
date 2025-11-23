@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Trail Accessibility Survey - Access Nature</title>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="./src/css/ui-polish.css">
+  
+  <style>
+    body {
+      padding-top: 60px;
+      background: var(--gray-50);
+    }
+
+    .survey-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 16px 100px;
+    }
+
+    /* Progress Bar */
+    .survey-progress {
+      background: white;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .progress-step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gray-300);
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all var(--transition-base);
+    }
+
+    .progress-step.active .progress-step-number {
+      background: var(--primary-color);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .progress-step.completed .progress-step-number {
+      background: var(--success-color);
+      color: white;
+    }
+
+    .progress-step.completed .progress-step-number::after {
+      content: '✓';
+    }
+
+    .progress-step-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .progress-step.active .progress-step-label {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    /* Progress Line */
+    .progress-line {
+      position: absolute;
+      top: 18px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gray-300);
+      z-index: 1;
+    }
+
+    .progress-line-fill {
+      height: 100%;
+      background: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    /* Survey Sections */
+    .survey-section {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .survey-section.active {
+      display: block;
+      animation: fadeInSection 0.3s ease;
+    }
+
+    @keyframes fadeInSection {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 8px;
+    }
+
+    .section-description {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* Question Groups */
+    .question-group {
+      margin-bottom: 32px;
+    }
+
+    .question-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .question-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-color);
+    }
+
+    /* Rating Options with Visual Icons */
+    .rating-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+    }
+
+    .rating-option {
+      position: relative;
+    }
+
+    .rating-option input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .rating-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 12px;
+      border: 2px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      text-align: center;
+      min-height: 100px;
+      justify-content: center;
+    }
+
+    .rating-option input:checked + label {
+      border-color: var(--primary-color);
+      background: rgba(var(--primary-color-rgb), 0.05);
+    }
+
+    .rating-option input:focus + label {
+      box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.1);
+    }
+
+    .rating-icon {
+      font-size: 32px;
+    }
+
+    .rating-text {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Navigation Buttons */
+    .survey-navigation {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 16px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 600;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .survey-navigation .btn {
+      flex: 1;
+      max-width: 200px;
+    }
+
+    @media (min-width: 768px) {
+      .survey-navigation {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        border-radius: 16px 16px 0 0;
+        max-width: 800px;
+      }
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 767px) {
+      .progress-step-label {
+        display: none;
+      }
+
+      .rating-options {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      }
+
+      .rating-option label {
+        padding: 12px 8px;
+        min-height: 90px;
+      }
+
+      .rating-icon {
+        font-size: 28px;
+      }
+
+      .rating-text {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="top-nav" role="navigation">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-brand-icon">🌲</span>
+      <span>Access Nature</span>
+    </a>
+    
+    <button class="menu-toggle" 
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            id="menuToggle">
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a href="tracker.html" class="nav-link">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Track Trail</span>
+      </a>
+      <a href="routes.html" class="nav-link">
+        <span class="nav-icon">📍</span>
+        <span class="nav-label">My Routes</span>
+      </a>
+      <a href="accessibility.html" class="nav-link active">
+        <span class="nav-icon">♿</span>
+        <span class="nav-label">Survey</span>
+      </a>
+      <a href="profile.html" class="nav-link">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="survey-container">
+    <!-- Progress Indicator -->
+    <div class="survey-progress">
+      <div class="progress-steps">
+        <div class="progress-line">
+          <div class="progress-line-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="progress-step active" data-step="1">
+          <div class="progress-step-number">1</div>
+          <div class="progress-step-label">Path Surface</div>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="progress-step-number">2</div>
+          <div class="progress-step-label">Width & Grade</div>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="progress-step-number">3</div>
+          <div class="progress-step-label">Obstacles</div>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="progress-step-number">4</div>
+          <div class="progress-step-label">Amenities</div>
+        </div>
+        <div class="progress-step" data-step="5">
+          <div class="progress-step-number">5</div>
+          <div class="progress-step-label">Review</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Survey Form -->
+    <form id="accessibilityForm">
+      
+      <!-- Section 1: Path Surface -->
+      <div class="survey-section active" data-section="1">
+        <h2 class="section-title">Path Surface</h2>
+        <p class="section-description">Help us understand the trail surface conditions</p>
+
+        <div class="question-group">
+          <label class="question-label">What is the primary surface type?</label>
+          <div class="rating-options">
+            <div class="rating-option">
+              <input type="radio" name="surface" id="surface1" value="paved" required>
+              <label for="surface1">
+                <span class="rating-icon">🛤️</span>
+                <span class="rating-text">Paved</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="surface" id="surface2" value="gravel">
+              <label for="surface2">
+                <span class="rating-icon">🪨</span>
+                <span class="rating-text">Gravel</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="surface" id="surface3" value="dirt">
+              <label for="surface3">
+                <span class="rating-icon">🏜️</span>
+                <span class="rating-text">Dirt</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="surface" id="surface4" value="grass">
+              <label for="surface4">
+                <span class="rating-icon">🌿</span>
+                <span class="rating-text">Grass</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">How would you rate the surface condition?</label>
+          <div class="rating-options">
+            <div class="rating-option">
+              <input type="radio" name="condition" id="cond1" value="excellent" required>
+              <label for="cond1">
+                <span class="rating-icon">⭐</span>
+                <span class="rating-text">Excellent</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="condition" id="cond2" value="good">
+              <label for="cond2">
+                <span class="rating-icon">👍</span>
+                <span class="rating-text">Good</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="condition" id="cond3" value="fair">
+              <label for="cond3">
+                <span class="rating-icon">👌</span>
+                <span class="rating-text">Fair</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="condition" id="cond4" value="poor">
+              <label for="cond4">
+                <span class="rating-icon">⚠️</span>
+                <span class="rating-text">Poor</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Width & Grade -->
+      <div class="survey-section" data-section="2">
+        <h2 class="section-title">Width & Grade</h2>
+        <p class="section-description">Information about path dimensions and slope</p>
+
+        <div class="question-group">
+          <label class="question-label">Estimated path width</label>
+          <div class="rating-options">
+            <div class="rating-option">
+              <input type="radio" name="width" id="width1" value="narrow" required>
+              <label for="width1">
+                <span class="rating-icon">↔️</span>
+                <span class="rating-text">Narrow<br>(&lt;1m)</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="width" id="width2" value="moderate">
+              <label for="width2">
+                <span class="rating-icon">↔️↔️</span>
+                <span class="rating-text">Moderate<br>(1-2m)</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="width" id="width3" value="wide">
+              <label for="width3">
+                <span class="rating-icon">↔️↔️↔️</span>
+                <span class="rating-text">Wide<br>(&gt;2m)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">Steepness of the trail</label>
+          <div class="rating-options">
+            <div class="rating-option">
+              <input type="radio" name="grade" id="grade1" value="flat" required>
+              <label for="grade1">
+                <span class="rating-icon">➡️</span>
+                <span class="rating-text">Flat</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="grade" id="grade2" value="gentle">
+              <label for="grade2">
+                <span class="rating-icon">↗️</span>
+                <span class="rating-text">Gentle</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="grade" id="grade3" value="moderate">
+              <label for="grade3">
+                <span class="rating-icon">⬆️</span>
+                <span class="rating-text">Moderate</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="grade" id="grade4" value="steep">
+              <label for="grade4">
+                <span class="rating-icon">⏫</span>
+                <span class="rating-text">Steep</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Obstacles -->
+      <div class="survey-section" data-section="3">
+        <h2 class="section-title">Obstacles</h2>
+        <p class="section-description">Identify any obstacles along the trail</p>
+
+        <div class="question-group">
+          <label class="question-label">Are there steps or stairs?</label>
+          <div class="rating-options">
+            <div class="rating-option">
+              <input type="radio" name="stairs" id="stairs1" value="none" required>
+              <label for="stairs1">
+                <span class="rating-icon">✅</span>
+                <span class="rating-text">None</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="stairs" id="stairs2" value="few">
+              <label for="stairs2">
+                <span class="rating-icon">🪜</span>
+                <span class="rating-text">A Few</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="stairs" id="stairs3" value="many">
+              <label for="stairs3">
+                <span class="rating-icon">🪜🪜</span>
+                <span class="rating-text">Many</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">Are there other obstacles? (roots, rocks, etc.)</label>
+          <div class="rating-options">
+            <div class="rating-option">
+              <input type="radio" name="obstacles" id="obs1" value="none" required>
+              <label for="obs1">
+                <span class="rating-icon">✅</span>
+                <span class="rating-text">None</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="obstacles" id="obs2" value="minor">
+              <label for="obs2">
+                <span class="rating-icon">⚠️</span>
+                <span class="rating-text">Minor</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="obstacles" id="obs3" value="significant">
+              <label for="obs3">
+                <span class="rating-icon">🚧</span>
+                <span class="rating-text">Significant</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Amenities -->
+      <div class="survey-section" data-section="4">
+        <h2 class="section-title">Amenities</h2>
+        <p class="section-description">What facilities are available?</p>
+
+        <div class="question-group">
+          <label class="question-label">Select all amenities available (check all that apply)</label>
+          <div class="checkbox-option">
+            <input type="checkbox" name="amenities" id="amenity1" value="parking">
+            <label for="amenity1" class="checkbox-label">
+              <strong>🅿️ Accessible Parking</strong><br>
+              <small>Designated accessible parking spaces</small>
+            </label>
+          </div>
+          <div class="checkbox-option">
+            <input type="checkbox" name="amenities" id="amenity2" value="restrooms">
+            <label for="amenity2" class="checkbox-label">
+              <strong>🚻 Accessible Restrooms</strong><br>
+              <small>Restroom facilities available</small>
+            </label>
+          </div>
+          <div class="checkbox-option">
+            <input type="checkbox" name="amenities" id="amenity3" value="benches">
+            <label for="amenity3" class="checkbox-label">
+              <strong>🪑 Benches/Seating</strong><br>
+              <small>Places to rest along the trail</small>
+            </label>
+          </div>
+          <div class="checkbox-option">
+            <input type="checkbox" name="amenities" id="amenity4" value="signage">
+            <label for="amenity4" class="checkbox-label">
+              <strong>🪧 Clear Signage</strong><br>
+              <small>Trail markers and information signs</small>
+            </label>
+          </div>
+          <div class="checkbox-option">
+            <input type="checkbox" name="amenities" id="amenity5" value="shade">
+            <label for="amenity5" class="checkbox-label">
+              <strong>🌳 Shade/Shelter</strong><br>
+              <small>Shaded areas or covered structures</small>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Review -->
+      <div class="survey-section" data-section="5">
+        <h2 class="section-title">Review & Submit</h2>
+        <p class="section-description">Add any additional notes about this trail</p>
+
+        <div class="question-group">
+          <label class="form-label" for="additionalNotes">Additional Comments (Optional)</label>
+          <textarea id="additionalNotes" 
+                    name="additionalNotes"
+                    class="form-textarea" 
+                    placeholder="Any other observations about trail accessibility..."
+                    rows="5"></textarea>
+        </div>
+
+        <div class="question-group">
+          <label class="question-label">Overall accessibility rating</label>
+          <div class="rating-options">
+            <div class="rating-option">
+              <input type="radio" name="overall" id="overall1" value="5" required>
+              <label for="overall1">
+                <span class="rating-icon">⭐⭐⭐⭐⭐</span>
+                <span class="rating-text">Excellent</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="overall" id="overall2" value="4">
+              <label for="overall2">
+                <span class="rating-icon">⭐⭐⭐⭐</span>
+                <span class="rating-text">Good</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="overall" id="overall3" value="3">
+              <label for="overall3">
+                <span class="rating-icon">⭐⭐⭐</span>
+                <span class="rating-text">Fair</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="overall" id="overall4" value="2">
+              <label for="overall4">
+                <span class="rating-icon">⭐⭐</span>
+                <span class="rating-text">Poor</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" name="overall" id="overall5" value="1">
+              <label for="overall5">
+                <span class="rating-icon">⭐</span>
+                <span class="rating-text">Very Poor</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Navigation Buttons -->
+    <div class="survey-navigation">
+      <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+        ← Previous
+      </button>
+      <button type="button" class="btn btn-primary" id="nextBtn">
+        Next →
+      </button>
+      <button type="button" class="btn btn-success" id="submitBtn" style="display: none;">
+        Submit Survey
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="./src/js/navigation.js"></script>
+  <script src="./src/js/toast.js"></script>
+  <script src="./src/js/loading.js"></script>
+  <script src="./src/js/modal.js"></script>
+  <script src="./src/js/touch-interactions.js"></script>
+
+  <script>
+    // Survey Navigation Controller
+    class SurveyController {
+      constructor() {
+        this.currentSection = 1;
+        this.totalSections = 5;
+        this.form = document.getElementById('accessibilityForm');
+        
+        this.init();
+      }
+
+      init() {
+        this.setupEventListeners();
+        this.setupSwipeGestures();
+        this.updateProgress();
+      }
+
+      setupEventListeners() {
+        document.getElementById('nextBtn').addEventListener('click', () => this.next());
+        document.getElementById('prevBtn').addEventListener('click', () => this.previous());
+        document.getElementById('submitBtn').addEventListener('click', () => this.submit());
+      }
+
+      setupSwipeGestures() {
+        // Enable swipe navigation on touch devices
+        new SwipeDetector(document.querySelector('.survey-container'), {
+          onSwipeLeft: () => this.next(),
+          onSwipeRight: () => this.previous()
+        });
+      }
+
+      next() {
+        if (!this.validateCurrentSection()) {
+          return;
+        }
+
+        if (this.currentSection < this.totalSections) {
+          this.currentSection++;
+          this.showSection(this.currentSection);
+        }
+      }
+
+      previous() {
+        if (this.currentSection > 1) {
+          this.currentSection--;
+          this.showSection(this.currentSection);
+        }
+      }
+
+      showSection(sectionNumber) {
+        // Hide all sections
+        document.querySelectorAll('.survey-section').forEach(section => {
+          section.classList.remove('active');
+        });
+
+        // Show current section
+        const currentSectionEl = document.querySelector(`.survey-section[data-section="${sectionNumber}"]`);
+        if (currentSectionEl) {
+          currentSectionEl.classList.add('active');
+          
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        this.updateProgress();
+        this.updateButtons();
+      }
+
+      updateProgress() {
+        // Update progress bar
+        const progress = ((this.currentSection - 1) / (this.totalSections - 1)) * 100;
+        document.getElementById('progressFill').style.width = `${progress}%`;
+
+        // Update step indicators
+        document.querySelectorAll('.progress-step').forEach((step, index) => {
+          const stepNumber = index + 1;
+          
+          step.classList.remove('active', 'completed');
+          
+          if (stepNumber === this.currentSection) {
+            step.classList.add('active');
+          } else if (stepNumber < this.currentSection) {
+            step.classList.add('completed');
+            step.querySelector('.progress-step-number').textContent = '';
+          } else {
+            step.querySelector('.progress-step-number').textContent = stepNumber;
+          }
+        });
+      }
+
+      updateButtons() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Previous button
+        prevBtn.style.display = this.currentSection === 1 ? 'none' : 'inline-flex';
+
+        // Next/Submit buttons
+        if (this.currentSection === this.totalSections) {
+          nextBtn.style.display = 'none';
+          submitBtn.style.display = 'inline-flex';
+        } else {
+          nextBtn.style.display = 'inline-flex';
+          submitBtn.style.display = 'none';
+        }
+      }
+
+      validateCurrentSection() {
+        const currentSectionEl = document.querySelector(`.survey-section[data-section="${this.currentSection}"]`);
+        const requiredFields = currentSectionEl.querySelectorAll('[required]');
+        
+        let isValid = true;
+        const checkedFields = new Set();
+
+        requiredFields.forEach(field => {
+          if (field.type === 'radio') {
+            if (!checkedFields.has(field.name)) {
+              checkedFields.add(field.name);
+              const radioGroup = currentSectionEl.querySelectorAll(`[name="${field.name}"]`);
+              const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+              
+              if (!isChecked) {
+                isValid = false;
+              }
+            }
+          } else if (!field.value.trim()) {
+            isValid = false;
+          }
+        });
+
+        if (!isValid) {
+          toast.warning('Required Fields', 'Please answer all required questions before continuing');
+        }
+
+        return isValid;
+      }
+
+      async submit() {
+        if (!this.validateCurrentSection()) {
+          return;
+        }
+
+        const confirmed = await modal.confirm({
+          title: 'Submit Survey',
+          message: 'Are you ready to submit your accessibility survey?',
+          confirmText: 'Submit',
+          confirmClass: 'btn-success'
+        });
+
+        if (!confirmed) return;
+
+        const submitBtn = document.getElementById('submitBtn');
+        
+        await loading.withButtonLoading(submitBtn, async () => {
+          // Simulate submission
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Collect form data
+          const formData = new FormData(this.form);
+          const data = {};
+          
+          for (const [key, value] of formData.entries()) {
+            if (data[key]) {
+              if (Array.isArray(data[key])) {
+                data[key].push(value);
+              } else {
+                data[key] = [data[key], value];
+              }
+            } else {
+              data[key] = value;
+            }
+          }
+
+          // Save to localStorage
+          const surveys = JSON.parse(localStorage.getItem('surveys') || '[]');
+          surveys.push({
+            ...data,
+            timestamp: Date.now()
+          });
+          localStorage.setItem('surveys', JSON.stringify(surveys));
+        });
+
+        // Show success message
+        await modal.alert({
+          title: 'Survey Submitted!',
+          message: 'Thank you for contributing to trail accessibility information. Your input helps make nature more accessible for everyone!'
+        });
+
+        // Redirect to tracker
+        window.location.href = 'tracker.html';
+      }
+    }
+
+    // Initialize survey controller
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        window.surveyController = new SurveyController();
+      });
+    } else {
+      window.surveyController = new SurveyController();
+    }
+  </script>
+
+</body>
+</html>

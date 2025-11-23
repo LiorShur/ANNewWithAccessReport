@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Access Nature - Track accessible trails with GPS">
+  <title>Trail Tracker - Access Nature</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css">
+  
+  <!-- 1. Design System FIRST! -->
+  <link rel="stylesheet" href="src/css/design-system.css">
+
+  <!-- 2. Component Systems -->
+  <link rel="stylesheet" href="src/css/buttons.css">
+  <link rel="stylesheet" href="src/css/toasts.css">
+  <link rel="stylesheet" href="src/css/modals.css">
+  <link rel="stylesheet" href="src/css/loading-states.css">
+  <link rel="stylesheet" href="src/css/focus-states.css">
+
+  <!-- 3. Base & Layout -->
+  <link rel="stylesheet" href="src/css/base.css">
+  <link rel="stylesheet" href="src/css/layout.css">
+
+  <!-- 4. Page-Specific -->
+  <link rel="stylesheet" href="src/css/tracker-custom.css">
+  <link rel="stylesheet" href="src/css/navigation-features.css">
+  <link rel="stylesheet" href="src/css/components.css">
+  <link rel="stylesheet" href="src/css/auth.css">
+  <link rel="stylesheet" href="src/css/ui-polish.css">
+  <link rel="stylesheet" href="src/css/themes.css">
+
+  <style>
+/* TRACKER HAMBURGER FIX - Override body overflow */
+@media (max-width: 768px) {
+  /* CRITICAL: Allow overflow on mobile for menu */
+  body {
+    overflow: visible !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* When menu is open, prevent body scroll but allow menu scroll */
+  body.menu-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+  }
+  
+  /* Hamburger button - HIGHER than map */
+  .menu-toggle {
+    display: flex !important;
+    z-index: 10000 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 8px !important;
+    cursor: pointer !important;
+  }
+  
+  .hamburger-icon {
+    width: 24px !important;
+    height: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    pointer-events: none !important;
+  }
+  
+  .hamburger-icon span {
+    display: block !important;
+    width: 100% !important;
+    height: 3px !important;
+    background: #1a1a1a !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  /* Animate to X */
+  .menu-toggle.active .hamburger-icon span:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg) !important;
+  }
+  
+  .menu-toggle.active .hamburger-icon span:nth-child(2) {
+    opacity: 0 !important;
+  }
+  
+  .menu-toggle.active .hamburger-icon span:nth-child(3) {
+    transform: translateY(-8.5px) rotate(-45deg) !important;
+  }
+  
+  /* Mobile menu - MUST be higher than map and other elements */
+  .nav-menu {
+    position: fixed !important;
+    top: 60px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(10px) !important;
+    z-index: 9999 !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 16px !important;
+    gap: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    
+    /* Start hidden */
+    transform: translateX(100%) !important;
+    opacity: 0 !important;
+    transition: all 0.3s ease !important;
+    pointer-events: none !important;
+  }
+  
+  /* Active state - slide in from right */
+  .nav-menu.active {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Nav links */
+  .nav-menu .nav-link {
+    width: 100% !important;
+    padding: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    color: #1a1a1a !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+  }
+  
+  .nav-menu .nav-link:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  /* Ensure top nav has proper z-index */
+  .top-nav {
+    z-index: 10001 !important;
+  }
+  
+  /* Lower map z-index on mobile when menu is open */
+  body.menu-open .map-container {
+    z-index: 1 !important;
+    pointer-events: none !important;
+  }
+  
+  body.menu-open .tracking-controls {
+    pointer-events: none !important;
+  }
+}
+
+/* Desktop - hide hamburger */
+@media (min-width: 769px) {
+  .menu-toggle {
+    display: none !important;
+  }
+  
+  .nav-menu {
+    position: static !important;
+    display: flex !important;
+    flex-direction: row !important;
+    transform: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Restore body overflow on desktop */
+  body {
+    overflow: hidden !important;
+  }
+}
+</style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Mobile-First Top Navigation -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-brand-icon">🌲</span>
+      <span>Access Nature</span>
+    </a>
+
+    <button 
+      class="menu-toggle" 
+      id="menuToggle" 
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+    >
+      <div class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
+
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </a>
+
+      <a href="tracker.html" class="nav-link active">
+        <span class="nav-icon">📍</span>
+        <span class="nav-label">Track Trail</span>
+      </a>
+
+      <button class="nav-link" onclick="togglePanel('exportPanel')" type="button">
+        <span class="nav-icon">📤</span>
+        <span class="nav-label">Export</span>
+      </button>
+
+      <button class="nav-link" onclick="togglePanel('summaryPanel')" type="button">
+        <span class="nav-icon">📂</span>
+        <span class="nav-label">Routes</span>
+      </button>
+
+      <button class="nav-link" id="authNavBtn" type="button">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label" id="authNavLabel">Account</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Auth Status Bar (for backward compatibility) -->
+  <div id="authStatusBar" class="auth-status-bar" style="display: none;">
+    <div id="userInfo" class="user-info hidden">
+      <span class="user-greeting">Welcome, <span id="userEmail"></span>!</span>
+      <button id="logoutBtn" class="auth-btn logout-btn">Logout</button>
+    </div>
+    <div id="authPrompt" class="auth-prompt">
+      <button id="showAuthBtn" class="auth-btn login-btn">Sign In</button>
+    </div>
+  </div>
+
+  <!-- Complete Auth Modal -->
+  <div id="authModal" class="auth-modal hidden">
+    <div class="auth-modal-backdrop" onclick="closeAuthModal()"></div>
+    <div class="auth-modal-container">
+      <div class="auth-modal-header">
+        <h2 id="authModalTitle">Welcome to Access Nature</h2>
+        <button class="auth-modal-close" onclick="closeAuthModal()">✕</button>
+      </div>
+      
+      <div class="auth-modal-content">
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-form active">
+          <div class="auth-form-header">
+            <h3>Sign In to Your Account</h3>
+            <p>Continue your accessibility mapping journey</p>
+          </div>
+          
+          <form class="auth-inputs">
+            <div class="input-group">
+              <input type="email" id="loginEmail" placeholder="Email address" required>
+              <span class="input-icon">📧</span>
+            </div>
+            
+            <div class="input-group">
+              <input type="password" id="loginPassword" placeholder="Password" required>
+              <span class="input-icon">🔒</span>
+            </div>
+            
+            <button type="submit" id="loginBtn" class="auth-submit-btn">
+              <span class="btn-text">Sign In</span>
+              <span class="btn-spinner hidden">⏳</span>
+            </button>
+          </form>
+          
+          <div class="auth-divider">
+            <span>or</span>
+          </div>
+          
+          <button id="googleLoginBtn" class="google-btn">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyLjU2IDEyLjI1QzIyLjU2IDExLjQ3IDIyLjQ5IDEwLjcyIDIyLjM2IDEwSDEyVjE0LjI2SDE3LjkyQzE3LjY2IDE1LjYzIDE2Ljg2IDE2Ljc4IDE1LjY2IDE3LjUzVjIwLjM0SDE5LjI4QzIxLjM2IDE4LjQyIDIyLjU2IDE1LjYgMjIuNTYgMTIuMjVaIiBmaWxsPSIjNDI4NUY0Ii8+CjxwYXRoIGQ9Ik0xMiAyM0M5LjExIDIzIDYuNjYgMjEuOTIgNS4xIDIwLjM0TDEuNjUgMTcuNTNDNC42OSAyMC42MSA4LjEyIDIzIDEyIDIzWiIgZmlsbD0iIzM0QTg1MyIvPgo8cGF0aCBkPSJNNS4xIDIwLjM0QzQuMjUgMTkuNTIgMy41OCAxOC40MyAzLjIgMTcuMkgwVjIwLjM0QzAuNDggMjEuMDkgMS4wNCAyMS43NSAxLjY1IDIyLjI4TDUuMSAyMC4zNFoiIGZpbGw9IiNGQkJDMDQiLz4KPHA+" alt="Google" class="google-icon">
+            <span>Continue with Google</span>
+          </button>
+          
+          <div class="auth-switch">
+            <p>Don't have an account? <button type="button" onclick="switchToSignup()" class="switch-btn">Sign up</button></p>
+          </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" class="auth-form">
+          <div class="auth-form-header">
+            <h3>Create Your Account</h3>
+            <p>Join the community making nature accessible</p>
+          </div>
+          
+          <form class="auth-inputs">
+            <div class="input-group">
+              <input type="text" id="signupName" placeholder="Full name" required>
+              <span class="input-icon">👤</span>
+            </div>
+            
+            <div class="input-group">
+              <input type="email" id="signupEmail" placeholder="Email address" required>
+              <span class="input-icon">📧</span>
+            </div>
+            
+            <div class="input-group">
+              <input type="password" id="signupPassword" placeholder="Create password" required>
+              <span class="input-icon">🔒</span>
+            </div>
+            
+            <button type="submit" id="signupBtn" class="auth-submit-btn">
+              <span class="btn-text">Create Account</span>
+              <span class="btn-spinner hidden">⏳</span>
+            </button>
+          </form>
+          
+          <div class="auth-divider">
+            <span>or</span>
+          </div>
+          
+          <button id="googleSignupBtn" class="google-btn">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyLjU2IDEyLjI1QzIyLjU2IDExLjQ3IDIyLjQ5IDEwLjcyIDIyLjM2IDEwSDEyVjE0LjI2SDE3LjkyQzE3LjY2IDE1LjYzIDE2Ljg2IDE2Ljc4IDE1LjY2IDE3LjUzVjIwLjM0SDE5LjI4QzIxLjM2IDE4LjQyIDIyLjU2IDE1LjYgMjIuNTYgMTIuMjVaIiBmaWxsPSIjNDI4NUY0Ii8+CjxwYXRoIGQ9Ik0xMiAyM0M5LjExIDIzIDYuNjYgMjEuOTIgNS4xIDIwLjM0TDEuNjUgMTcuNTNDNC42OSAyMC42MSA4LjEyIDIzIDEyIDIzWiIgZmlsbD0iIzM0QTg1MyIvPgo8cGF0aCBkPSJNNS4xIDIwLjM0QzQuMjUgMTkuNTIgMy41OCAxOC40MyAzLjIgMTcuMkgwVjIwLjM0QzAuNDggMjEuMDkgMS4wNCAyMS43NSAxLjY1IDIyLjI4TDUuMSAyMC4zNFoiIGZpbGw9IiNGQkJDMDQiLz4KPHA+" alt="Google" class="google-icon">
+            <span>Continue with Google</span>
+          </button>
+          
+          <div class="auth-switch">
+            <p>Already have an account? <button type="button" onclick="switchToLogin()" class="switch-btn">Sign in</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Container -->
+  <div id="map-container" class="map-container">
+    <div id="map"></div>
+  </div>
+
+  <!-- Enhanced Compass with Heading Display -->
+  <div id="compass-container" class="compass-container">
+    <!-- Round Compass -->
+    <div id="compass" class="compass-display">
+      <div class="compass-ring">
+        <div class="compass-cardinal north">N</div>
+        <div class="compass-cardinal east">E</div>
+        <div class="compass-cardinal south">S</div>
+        <div class="compass-cardinal west">W</div>
+      </div>
+      <div id="compass-needle" class="compass-needle"></div>
+      <div class="compass-center"></div>
+    </div>
+    
+    <!-- Heading Display -->
+    <div id="heading-display" class="heading-display">
+      <div class="heading-value" id="heading-value">0°</div>
+      <div class="heading-label">Heading</div>
+    </div>
+  </div>
+
+  <!-- Recenter Button -->
+  <button id="recenterBtn" class="map-control-button recenter-btn" title="Center on my location">
+    <span class="recenter-icon">📍</span>
+  </button>
+
+  <!-- Recording Indicator (Pulsating) -->
+  <div id="recording-indicator" class="recording-indicator hidden">
+    <span class="recording-dot"></span>
+    <span class="recording-text">RECORDING</span>
+  </div>
+
+  <!-- Top Control Bar -->
+  <div class="top-bar">
+    <button id="startBtn" class="btn btn-success" title="Start tracking" aria-label="Start tracking">▶ Start</button>
+    <button id="pauseBtn" class="btn btn-warning" title="Pause tracking" aria-label="Pause tracking">⏸ Pause</button>
+    <button id="stopBtn" class="btn btn-danger" title="Stop tracking and Save" aria-label="Stop tracking">⏹ Stop</button>
+    <span id="timer" class="stat-display" title="Timer display" aria-label="Timer display">00:00:00</span>
+    <span class="separator">|</span>
+    <span id="distance" class="stat-display" title="Distance display" aria-label="Distance display">0.00 km</span>
+  </div>
+
+  <!-- Left Controls -->
+  <div class="floating-left">
+    <button id="toggleBtn" class="btn btn-icon btn-primary" title="Toggle map rotation" aria-label="Toggle map rotation">🧭</button>
+    <button class="btn btn-icon btn-primary" onclick="openAccessibilityForm()" title="Open accessibility form" aria-label="Open accessibility form">♿</button>
+  </div>
+
+  <!-- Right Media Panel -->
+  <div class="floating-right media-panel" id="mediaPanel">
+    <button id="takePhotoBtn" class="btn btn-icon btn-primary" aria-label="Take photo" title="Take Photo">📷</button>
+    <button class="btn btn-icon btn-primary" onclick="addTextNote()" aria-label="Add note" title="Add Note">📝</button>
+    <button class="btn btn-icon btn-primary" onclick="showRouteDataOnMap()" aria-label="Show Route Data" title="Show Route Data">🗺</button>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div id="bottomNav" class="bottom-nav">
+    <button class="nav-button" onclick="togglePanel('exportPanel')">📤 Export</button>
+    <button class="nav-button" onclick="togglePanel('summaryPanel')">📂 Routes</button>
+    <button class="nav-button" onclick="togglePanel('trailGuidePanel')">🌐 Guides</button>
+    <button class="nav-button" onclick="togglePanel('devToolsPanel')">🛠️ Tools</button>
+  </div>
+
+  <!-- Export Panel -->
+  <div id="exportPanel" class="bottom-popup hidden">
+    <button id="prepareAndExportBtn" class="btn btn-primary">📦 Export Route</button>
+    <button id="exportGPXBtn" class="btn btn-primary">📍 Export GPX</button>
+    <button id="exportPDFBtn" class="btn btn-primary">📄 Export PDF</button>
+    <button id="exportSummaryBtn" class="btn btn-primary">🌐 Export Trail Guide</button>
+    <button id="saveToCloudBtn" class="btn btn-success cloud-save-btn">☁️ Save to Cloud</button>
+  </div>
+
+  <!-- Summary Panel -->
+  <div id="summaryPanel" class="bottom-popup hidden">
+    <button id="loadCloudRoutesBtn" class="btn btn-primary cloud-load-btn">☁️ Load My Routes</button>
+    <button id="loadMyGuidesBtn" class="btn btn-primary cloud-load-btn">🌐 Load My Guides</button>
+    <button id="clearAllSessionsBtn" class="btn btn-danger">🗑️ Clear Routes</button>
+    <button id="clearAllAppDataBtn" class="btn btn-danger">🧹 Clear Everything</button>
+  </div>
+
+  <!-- Trail Guide Panel -->
+  <div id="trailGuidePanel" class="bottom-popup hidden">
+    <h3>🌐 My Trail Guides</h3>
+    <div id="myGuidesList" class="guides-list">
+      <!-- Dynamically populated -->
+    </div>
+  </div>
+
+  <!-- Dev Tools Panel -->
+  <div id="devToolsPanel" class="bottom-popup hidden">
+    <button onclick="showStorageMonitor()" class="btn btn-info">🧪 Storage Monitor</button>
+    <button onclick="triggerImport()" class="btn btn-info">📥 Import Route</button>
+    <button id="resetBtn" onclick="confirmAndResetApp()" class="btn btn-danger">🔄 Reset App</button>
+  </div>
+
+  <!-- Accessibility Form Modal -->
+  <div id="accessibilityOverlay" class="overlay hidden">
+    <div id="accessibilityFormContainer" class="modal-container"></div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading...</div>
+  </div>
+
+  <!-- Hidden File Inputs -->
+  <input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
+  <input type="file" id="importFile" accept=".json,.gpx" class="hidden">
+
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- Load UI helpers as modules -->
+  <script src="./src/js/navigation.js"></script>
+  <script src="./src/js/toast.js"></script>
+  <script src="./src/js/loading.js"></script>
+  <script src="./src/js/modal.js"></script>
+  
+  <script type="module">
+    import toast from './src/helpers/toasts.js';
+    import modal from './src/helpers/modals.js';
+    import { showLoading, hideLoading } from './src/helpers/loading.js';
+    
+    // Make globally available
+    window.toast = toast;
+    window.modal = modal;
+    window.showLoading = showLoading;
+    window.hideLoading = hideLoading;
+    
+    console.log('✅ UI systems loaded');
+  </script>
+
+  <!-- Navigation toggle script -->
+  <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+      
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', () => {
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+          menuToggle.classList.toggle('active');
+          navMenu.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+        });
+        
+        // Close menu when clicking nav links
+        navMenu.querySelectorAll('.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('menu-open');
+          });
+        });
+      }
+
+      // Connect auth nav button to auth modal
+      const authNavBtn = document.getElementById('authNavBtn');
+      if (authNavBtn) {
+        authNavBtn.addEventListener('click', () => {
+          const showAuthBtn = document.getElementById('showAuthBtn');
+          const logoutBtn = document.getElementById('logoutBtn');
+          
+          if (showAuthBtn && !showAuthBtn.closest('.hidden')) {
+            showAuthBtn.click();
+          } else if (logoutBtn && !logoutBtn.closest('.hidden')) {
+            logoutBtn.click();
+          }
+        });
+      }
+    });
+  </script>
+
+  <!-- Your App JavaScript -->
+  <script type="module" src="src/main.js"></script>
+  <script type="module" src="src/features/auth.js"></script>
+
+</body>
+</html>

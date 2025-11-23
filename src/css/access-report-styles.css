@@ -1,0 +1,731 @@
+/**
+ * AccessReport Styles
+ * Complete styling for accessibility reporting system
+ * 
+ * File: css/access-report-styles.css
+ */
+
+/* ========================================
+   CRITICAL Z-INDEX FIXES
+   Ensure modals appear above Leaflet maps
+   ======================================== */
+
+.modal-backdrop {
+  z-index: 10000 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+.modal {
+  z-index: 10001 !important;
+  position: relative !important;
+}
+
+/* Leaflet map containers use z-index 400-1000 */
+.leaflet-container {
+  z-index: 1 !important;
+}
+
+#accessReportMap {
+  z-index: 1 !important;
+  position: relative;
+}
+
+/* Leaflet controls should be above map but below modals */
+.leaflet-control-container {
+  z-index: 800 !important;
+}
+
+/* Floating button above map but below modals */
+.btn-report-floating {
+  z-index: 9000 !important;
+}
+
+/* Toast notifications above everything */
+.toast-container {
+  z-index: 10002 !important;
+}
+
+/* ========================================
+   TIMELINE FILTER BAR
+   ======================================== */
+
+.timeline-filter-bar {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-select {
+  padding: 10px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 150px;
+}
+
+.filter-select:hover {
+  border-color: #3b82f6;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.btn-refresh {
+  padding: 10px 20px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-refresh:active {
+  transform: translateY(0);
+}
+
+
+/* ========================================
+   TIMELINE CONTENT
+   ======================================== */
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline-empty {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.empty-message {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.empty-hint {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+
+/* ========================================
+   REPORT CARDS
+   ======================================== */
+
+.timeline-report-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.timeline-report-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.report-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.report-card-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-status {
+  color: white;
+}
+
+.badge-severity {
+  background: white;
+  border: 2px solid;
+}
+
+.report-card-date {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.report-card-body {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+}
+
+.report-card-icon {
+  font-size: 40px;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 12px;
+}
+
+.report-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.report-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.report-card-description {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.report-card-photo {
+  margin: 12px 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.report-card-photo img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.report-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.report-card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.report-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.btn-card-action {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-view:hover {
+  background: #2563eb;
+}
+
+.btn-upvote {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.btn-upvote:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+
+/* ========================================
+   FLOATING REPORT BUTTON
+   ======================================== */
+
+.btn-report-floating {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1000;
+  transition: all 0.2s;
+}
+
+.btn-report-floating:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+  background: #2563eb;
+}
+
+.btn-report-floating:active {
+  transform: translateY(0);
+}
+
+
+/* ========================================
+   REPORT FORM MODAL
+   ======================================== */
+
+.access-report-form {
+  padding: 8px 0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.form-group input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.form-group input[type="file"] {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.form-info {
+  padding: 12px 16px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #4b5563;
+  border-left: 3px solid #3b82f6;
+}
+
+.photo-preview {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.photo-preview img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid #e5e7eb;
+}
+
+
+/* ========================================
+   MAP MARKERS & POPUPS
+   ======================================== */
+
+.report-marker-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.report-marker {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.report-marker:hover {
+  transform: scale(1.15);
+}
+
+.report-popup {
+  min-width: 280px;
+}
+
+.report-popup .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.report-popup .leaflet-popup-content {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.report-popup-content {
+  padding: 4px;
+}
+
+.report-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.report-popup-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.report-popup-photo {
+  margin-bottom: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.report-popup-photo img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.report-popup-description {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.report-popup-meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.report-popup-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-view-details {
+  flex: 1;
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-view-details:hover {
+  background: #2563eb;
+}
+
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .btn-refresh {
+    width: 100%;
+  }
+
+  .report-card-body {
+    flex-direction: column;
+  }
+
+  .report-card-icon {
+    width: 100%;
+    height: 56px;
+  }
+
+  .report-card-actions {
+    flex-direction: column;
+  }
+
+  .btn-report-floating {
+    bottom: 16px;
+    right: 16px;
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+
+  .btn-report-floating span:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-filter-bar {
+    padding: 12px;
+  }
+
+  .report-card-header,
+  .report-card-body,
+  .report-card-actions {
+    padding: 12px;
+  }
+
+  .report-card-title {
+    font-size: 16px;
+  }
+
+  .report-card-description {
+    font-size: 13px;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+}
+
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.btn-card-action:focus,
+.btn-refresh:focus,
+.btn-report-floating:focus,
+.filter-select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .timeline-report-card {
+    border: 2px solid #000;
+  }
+
+  .badge {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-report-card,
+  .btn-report-floating,
+  .btn-card-action,
+  .report-marker {
+    transition: none;
+  }
+
+  .timeline-report-card:hover {
+    transform: none;
+  }
+
+  .btn-report-floating:hover {
+    transform: none;
+  }
+}
+
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .btn-report-floating,
+  .timeline-filter-bar,
+  .report-card-actions {
+    display: none;
+  }
+
+  .timeline-report-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+}
+
+
+/* ========================================
+   DARK MODE SUPPORT (Optional)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .timeline-filter-bar,
+  .timeline-report-card {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+
+  .report-card-header,
+  .report-card-actions {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .filter-select {
+    background: #374151;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+
+  .report-card-title {
+    color: #f9fafb;
+  }
+
+  .report-card-description,
+  .report-card-meta {
+    color: #d1d5db;
+  }
+
+  .report-card-icon {
+    background: #374151;
+  }
+
+  .btn-upvote {
+    background: #374151;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+
+  .btn-upvote:hover {
+    background: #4b5563;
+  }
+
+  .form-info {
+    background: #374151;
+    color: #d1d5db;
+  }
+}

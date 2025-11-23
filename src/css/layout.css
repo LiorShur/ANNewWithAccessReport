@@ -1,0 +1,266 @@
+/* Layout and positioning - UPDATED WITH DESIGN SYSTEM VARIABLES */
+
+#map, #map-container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#map-container {
+  width: 200%;
+  height: 200%;
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  transform-origin: center center;
+  transition: none;
+  z-index: var(--z-base);
+}
+
+/* Top Control Bar - Tracking Controls */
+.top-bar {
+  position: fixed;
+  top: 110px;  /* Below top-nav (60px) + auth bar (45px) + gap (5px) */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  box-shadow: var(--shadow-lg);
+  z-index: 8000;  /* Below auth bar but above map */
+}
+
+.floating-left {
+  position: fixed;
+  left: var(--space-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-dropdown);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.floating-right {
+  position: fixed;
+  right: var(--space-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-dropdown);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: var(--space-sm);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-dropdown);
+  display: flex;
+  gap: var(--space-sm);
+  background: rgba(0, 0, 0, 0.7);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+}
+
+.bottom-popup {
+  position: fixed;
+  bottom: 70px;
+  left: var(--space-sm);
+  right: var(--space-sm);
+  z-index: var(--z-dropdown);
+  background: rgba(0, 0, 0, 0.8);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+#compass {
+  position: fixed;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 2500;
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.9);
+  border: 2px solid var(--color-text-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background: var(--color-overlay-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-container {
+  background: var(--color-surface);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+/* Auth Status Bar - tracker.html */
+.auth-status-bar {
+  position: fixed;
+  top: 60px;  /* Below top-nav */
+  right: var(--space-md);
+  left: var(--space-md);
+  height: 45px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  z-index: 9000;  /* Below nav (10000) but above map */
+  box-shadow: var(--shadow-sm);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: white;
+  font-size: var(--font-size-sm);
+}
+
+.user-greeting {
+  font-weight: var(--font-weight-medium);
+}
+
+#userEmail {
+  font-weight: var(--font-weight-semibold);
+}
+
+.auth-prompt {
+  display: flex;
+  align-items: center;
+}
+
+.auth-btn {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 2px solid white;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.auth-btn:hover {
+  background: white;
+  color: #667eea;
+}
+
+/* Hidden class */
+.hidden {
+  display: none !important;
+}
+
+/* Fix stat-display color (timer/distance) */
+.stat-display {
+  font-family: var(--font-family-mono) !important;
+  font-weight: var(--font-weight-bold) !important;
+  font-size: var(--font-size-lg) !important;
+  color: var(--color-primary-dark) !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Force auth status bar visible */
+#authStatusBar {
+  position: fixed !important;
+  top: 60px !important;
+  left: var(--space-md) !important;
+  right: var(--space-md) !important;
+  height: 45px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  z-index: 9000 !important;
+  padding: var(--space-sm) var(--space-md) !important;
+  border-radius: var(--radius-md) !important;
+  gap: var(--space-md) !important;
+}
+
+#authStatusBar #userInfo,
+#authStatusBar #authPrompt {
+  display: flex !important;
+  color: white !important;
+  align-items: center !important;
+}
+
+#authStatusBar .hidden {
+  display: none !important;
+}
+
+#authStatusBar .auth-btn {
+  padding: var(--space-sm) var(--space-md) !important;
+  border: 2px solid white !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  font-weight: var(--font-weight-semibold) !important;
+  cursor: pointer !important;
+}
+
+.top-bar {
+  top: 110px !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .floating-left {
+    left: var(--space-xs);
+  }
+  
+  .floating-right {
+    right: var(--space-xs);
+  }
+  
+  .bottom-nav {
+    bottom: var(--space-xs);
+    left: var(--space-xs);
+    right: var(--space-xs);
+    transform: none;
+  }
+  
+  .bottom-popup {
+    left: var(--space-xs);
+    right: var(--space-xs);
+  }
+  
+  #compass {
+    top: var(--space-sm);
+    right: var(--space-sm);
+  }
+  
+  .auth-status-bar {
+    right: var(--space-sm);
+    left: var(--space-sm);
+  }
+}

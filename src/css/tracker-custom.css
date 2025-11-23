@@ -1,0 +1,490 @@
+/**
+ * ACCESS NATURE - TRACKER CUSTOM STYLES (UPDATED)
+ * Tracker-specific styles with design system variables
+ */
+
+/* ==========================================
+   BASE LAYOUT
+   ========================================== */
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ==========================================
+   MAP CONTAINER - FULL SCREEN
+   ========================================== */
+
+.map-container {
+  position: fixed;
+  top: 60px; /* Below nav */
+  left: 0;
+  right: 0;
+  bottom: 80px; /* Above tracking controls */
+  z-index: var(--z-base);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================
+   STATUS BAR - FLOATING
+   ========================================== */
+
+.status-bar {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-full);
+  z-index: 500;
+  display: flex;
+  gap: var(--space-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 90%;
+  overflow-x: auto;
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.status-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-success);
+  font-family: var(--font-family-mono);
+}
+
+.status-label {
+  font-size: var(--font-size-xs);
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--space-xs);
+}
+
+/* ==========================================
+   TRACKING CONTROLS - BOTTOM BAR
+   ========================================== */
+
+.tracking-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 600;
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tracking-controls .btn {
+  flex: 1;
+  min-width: 120px;
+  max-width: 180px;
+}
+
+/* ==========================================
+   MAP CONTROLS - FLOATING BUTTONS
+   ========================================== */
+
+.map-controls {
+  position: fixed;
+  bottom: 100px;
+  right: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  z-index: 500;
+}
+
+.map-control-button {
+  width: 48px;
+  height: 48px;
+  background: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: var(--font-size-xl);
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.map-control-button:hover,
+.map-control-button:focus {
+  background: var(--color-surface-hover);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.map-control-button:active {
+  transform: scale(0.95);
+}
+
+/* ==========================================
+   RECORDING INDICATOR - PULSE ANIMATION
+   ========================================== */
+
+.recording-indicator {
+  position: fixed;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-danger);
+  color: white;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  display: none;
+  align-items: center;
+  gap: var(--space-sm);
+  z-index: 500;
+  animation: pulse 2s infinite;
+  box-shadow: 0 2px 12px rgba(231, 76, 60, 0.5);
+}
+
+.recording-indicator.active {
+  display: flex;
+}
+
+.recording-dot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: var(--radius-full);
+  animation: blink 1s infinite;
+}
+
+/* Recording animations */
+@keyframes blink {
+  0%, 50% { 
+    opacity: 1; 
+  }
+  51%, 100% { 
+    opacity: 0; 
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    box-shadow: 0 2px 12px rgba(231, 76, 60, 0.5); 
+  }
+  50% { 
+    box-shadow: 0 2px 20px rgba(231, 76, 60, 0.8), 0 0 0 10px rgba(231, 76, 60, 0); 
+  }
+}
+
+/* ==========================================
+   LEAFLET MAP CUSTOMIZATION
+   ========================================== */
+
+/* Custom marker styles */
+.leaflet-marker-icon {
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+}
+
+/* Custom popup styles */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.leaflet-popup-content {
+  margin: var(--space-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+/* Polyline (route path) */
+.leaflet-interactive {
+  cursor: pointer;
+}
+
+/* ==========================================
+   MOBILE OPTIMIZATIONS
+   ========================================== */
+
+@media (max-width: 767px) {
+  /* Status Bar */
+  .status-bar {
+    top: 70px;
+    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-md);
+  }
+
+  .status-value {
+    font-size: var(--font-size-base);
+  }
+
+  .status-label {
+    font-size: var(--font-size-xs);
+  }
+
+  /* Tracking Controls */
+  .tracking-controls {
+    padding: var(--space-md);
+  }
+
+  .tracking-controls .btn {
+    min-width: 100px;
+    padding: var(--space-md) var(--space-md);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Map Controls */
+  .map-controls {
+    bottom: 90px;
+    right: var(--space-md);
+  }
+
+  .map-control-button {
+    width: 44px;
+    height: 44px;
+    font-size: var(--font-size-lg);
+  }
+
+  /* Recording Indicator */
+  .recording-indicator {
+    top: 140px;
+    font-size: var(--font-size-xs);
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  /* Adjust map container for mobile keyboard */
+  .map-container.keyboard-visible {
+    bottom: 0;
+  }
+}
+
+/* ==========================================
+   TABLET LAYOUT (768px - 1023px)
+   ========================================== */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .status-bar {
+    gap: var(--space-xl);
+    padding: var(--space-md) var(--space-xl);
+  }
+
+  .status-value {
+    font-size: var(--font-size-xl);
+  }
+
+  .tracking-controls {
+    padding: var(--space-lg);
+  }
+
+  .map-controls {
+    bottom: 110px;
+  }
+}
+
+/* ==========================================
+   DESKTOP LAYOUT (1024px+)
+   ========================================== */
+
+@media (min-width: 1024px) {
+  /* Map takes full height on desktop */
+  .map-container {
+    bottom: 0;
+  }
+
+  /* Status bar positioned higher */
+  .status-bar {
+    top: 90px;
+    padding: var(--space-md) var(--space-xl);
+    gap: var(--space-xxl);
+  }
+
+  .status-value {
+    font-size: var(--font-size-2xl);
+  }
+
+  .status-label {
+    font-size: var(--font-size-sm);
+  }
+
+  /* Tracking controls centered at bottom */
+  .tracking-controls {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-width: 700px;
+    padding: var(--space-lg);
+  }
+
+  .tracking-controls .btn {
+    max-width: 200px;
+  }
+
+  /* Map controls in better position */
+  .map-controls {
+    bottom: var(--space-md);
+    right: var(--space-md);
+  }
+
+  /* Recording indicator */
+  .recording-indicator {
+    top: 180px;
+    font-size: var(--font-size-base);
+    padding: var(--space-sm) var(--space-lg);
+  }
+}
+
+/* ==========================================
+   LANDSCAPE ORIENTATION
+   ========================================== */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .status-bar {
+    top: 70px;
+    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-md);
+  }
+
+  .status-value {
+    font-size: var(--font-size-sm);
+  }
+
+  .status-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .recording-indicator {
+    top: 120px;
+    font-size: var(--font-size-xs);
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  .tracking-controls {
+    padding: var(--space-sm);
+  }
+
+  .tracking-controls .btn {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* ==========================================
+   PRINT STYLES
+   ========================================== */
+
+@media print {
+  .status-bar,
+  .tracking-controls,
+  .map-controls,
+  .recording-indicator,
+  .top-nav {
+    display: none !important;
+  }
+
+  .map-container {
+    top: 0;
+    bottom: 0;
+    position: static;
+  }
+}
+
+/* ==========================================
+   DARK MODE SUPPORT
+   ========================================== */
+
+[data-theme="dark"] .status-bar {
+  background: rgba(30, 30, 30, 0.95);
+}
+
+[data-theme="dark"] .tracking-controls {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .map-control-button {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .map-control-button:hover {
+  background: var(--color-surface-hover);
+}
+
+/* ==========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ========================================== */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .status-bar {
+    border: 2px solid white;
+  }
+
+  .recording-indicator {
+    border: 2px solid white;
+  }
+
+  .map-control-button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .recording-indicator,
+  .recording-dot,
+  .map-control-button,
+  .tracking-controls .btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+.map-control-button:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.tracking-controls .btn:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   UTILITY CLASSES FOR TRACKER
+   ========================================== */
+
+.tracking-active .map-container {
+  /* Optional: adjust map when actively tracking */
+}
+
+.paused-state .recording-indicator {
+  background: var(--color-warning);
+  animation: none;
+}
+
+.stopped-state .tracking-controls {
+  /* Optional: styling for stopped state */
+}
