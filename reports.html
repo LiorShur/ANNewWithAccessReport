@@ -6,428 +6,200 @@
   <title>Accessibility Reports - Access Nature</title>
   <meta name="description" content="View and report accessibility barriers in outdoor spaces and urban areas">
   
-  <!-- Unified Design System -->
   <link rel="stylesheet" href="access-nature-design-system.css">
-  
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   
   <style>
-    /* Page-specific styles */
-    body {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    }
+    /* ==========================================
+       REPORTS PAGE STYLES - CLEANED & FIXED
+       ========================================== */
+    
+    body { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); }
 
-    .page-container {
-      max-width: var(--max-width-2xl);
-      margin: 0 auto;
-      padding: var(--space-xl);
-    }
+    .page-container { max-width: var(--max-width-2xl); margin: 0 auto; padding: var(--space-xl); }
 
     .page-header {
-      background: white;
-      border-radius: var(--radius-xl);
-      padding: var(--space-2xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow-lg);
+      background: white; border-radius: var(--radius-xl);
+      padding: var(--space-2xl); margin-bottom: var(--space-xl); box-shadow: var(--shadow-lg);
     }
+    .page-header h1 { font-size: var(--font-size-4xl); color: var(--text-color); margin-bottom: var(--space-sm); }
+    .page-header p { color: var(--text-secondary); font-size: var(--font-size-lg); margin: 0; }
 
-    .page-header h1 {
-      font-size: var(--font-size-4xl);
-      color: var(--text-color);
-      margin-bottom: var(--space-sm);
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-xl); }
+    .stat-card { background: white; border-radius: var(--radius-lg); padding: var(--space-xl); box-shadow: var(--shadow-md); text-align: center; }
+    .stat-value { font-size: var(--font-size-4xl); font-weight: 700; color: var(--primary-color); margin-bottom: var(--space-sm); }
+    .stat-label { color: var(--text-secondary); font-size: var(--font-size-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Filters */
+    .filters-section { background: white; border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-xl); box-shadow: var(--shadow-md); }
+    .filters-title { font-size: var(--font-size-xl); font-weight: 600; margin-bottom: var(--space-lg); display: flex; align-items: center; gap: var(--space-sm); }
+    .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-lg); }
+    .filter-actions { display: flex; gap: var(--space-md); flex-wrap: wrap; }
+
+    /* Map */
+    .map-section { background: white; border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-md); margin-bottom: var(--space-xl); }
+    .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); flex-wrap: wrap; gap: var(--space-md); }
+    .map-header h2 { font-size: var(--font-size-2xl); margin: 0; }
+    .map-controls { display: flex; gap: var(--space-sm); }
+    .map-control-btn {
+      width: 44px; height: 44px; background: var(--bg-secondary);
+      border: none; border-radius: var(--radius-md); cursor: pointer;
+      font-size: var(--font-size-xl); transition: all var(--transition-fast);
+      display: flex; align-items: center; justify-content: center;
     }
+    .map-control-btn:hover { background: var(--primary-color); color: white; transform: translateY(-2px); }
 
-    .page-header p {
-      color: var(--text-secondary);
-      font-size: var(--font-size-lg);
-      margin: 0;
+    #reportMap { height: 500px; border-radius: var(--radius-md); width: 100%; z-index: 1 !important; }
+    #reportMap.fullscreen { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999 !important; height: 100vh !important; width: 100vw !important; border-radius: 0; }
+
+    /* Timeline */
+    .timeline-section { background: white; border-radius: var(--radius-lg); padding: var(--space-xl); box-shadow: var(--shadow-md); }
+    .timeline-section h2 { font-size: var(--font-size-2xl); margin-bottom: var(--space-lg); }
+
+    .report-card { cursor: pointer; transition: all var(--transition-fast); }
+    .report-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-xl); }
+
+    /* FAB */
+    .report-fab {
+      position: fixed; bottom: var(--space-2xl); right: var(--space-2xl);
+      width: 64px; height: 64px; background: var(--error-color); color: white;
+      border: none; border-radius: var(--radius-full); font-size: 2rem;
+      cursor: pointer; box-shadow: var(--shadow-xl); transition: all var(--transition-base);
+      z-index: 100; display: flex; align-items: center; justify-content: center;
     }
+    .report-fab:hover { transform: scale(1.1); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4); }
 
-    /* CRITICAL: Report Modal Fix */
+    /* ===========================================
+       REPORT DETAIL MODAL - FIXED
+       =========================================== */
     #reportDetailModal {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      z-index: 10000 !important; /* Higher than everything */
-      background: rgba(0, 0, 0, 0.5) !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
+      position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+      z-index: 100000 !important; background: rgba(0, 0, 0, 0.5) !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
       padding: var(--space-md);
     }
-
-    #reportDetailModal.hidden {
-      display: none !important;
-    }
+    #reportDetailModal.hidden { display: none !important; }
 
     #reportDetailModal .modal-content {
-      background: white;
-      border-radius: var(--radius-xl);
-      max-width: 800px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-      z-index: 10001 !important;
+      background: white; border-radius: var(--radius-xl);
+      max-width: 800px; width: 100%; max-height: 90vh;
+      overflow-y: auto; position: relative; z-index: 100001 !important;
     }
 
-    /* Report Timeline Cards */
-    .report-card {
-      cursor: pointer;
-      transition: all var(--transition-fast);
+    /* Photo Lightbox - ABOVE Modal */
+    .photo-lightbox, .lightbox, [class*="lightbox"], #photoLightbox {
+      z-index: 9999999 !important; position: fixed !important;
     }
 
-    .report-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-xl);
+    /* Loading State */
+    .loading-data { position: relative; min-height: 100px; }
+    .loading-data::after {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 40px; height: 40px; border: 3px solid #e5e7eb; border-top-color: #3b82f6;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    .loading-spinner-inline { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 1rem; color: #6b7280; }
+    .loading-spinner-inline::before {
+      content: ''; width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top-color: #3b82f6;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
     }
 
-    /* Force modal to be visible */
-.modal-backdrop,
-[id^="modal-"],
-[id*="modal"],
-[class*="modal"] {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Ensure high z-index above everything */
-.modal-backdrop,
-[id^="modal-"] {
-  z-index: 999999 !important;
-  position: fixed !important;
-}
-
-/* Lower map z-index */
-#reportMap,
-.map-section,
-.leaflet-container {
-  z-index: 1 !important;
-}
-
-/* Ensure modal content is visible */
-.modal-content,
-[class*="modal-content"] {
-  opacity: 1 !important;
-  visibility: visible !important;
-  z-index: 1000000 !important;
-}
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-lg);
-      margin-bottom: var(--space-xl);
+    /* Autocomplete */
+    .autocomplete-container { position: relative; width: 100%; }
+    .autocomplete-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
+    .autocomplete-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .autocomplete-dropdown {
+      position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto;
+      background: white; border: 1px solid #d1d5db; border-top: none; border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); z-index: 1000; display: none;
     }
+    .autocomplete-dropdown.active { display: block; }
+    .autocomplete-item { padding: 0.75rem 1rem; cursor: pointer; transition: background-color 0.15s; }
+    .autocomplete-item:hover, .autocomplete-item.highlighted { background-color: #f3f4f6; }
+    .autocomplete-item.selected { background-color: #eff6ff; color: #1d4ed8; }
+    .autocomplete-no-results { padding: 0.75rem 1rem; color: #6b7280; font-style: italic; }
 
-    .stat-card {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: var(--space-xl);
-      box-shadow: var(--shadow-md);
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: var(--font-size-4xl);
-      font-weight: 700;
-      color: var(--primary-color);
-      margin-bottom: var(--space-sm);
-    }
-
-    .stat-label {
-      color: var(--text-secondary);
-      font-size: var(--font-size-sm);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Filters Section */
-    .filters-section {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: var(--space-xl);
-      margin-bottom: var(--space-xl);
-      box-shadow: var(--shadow-md);
-    }
-
-    .filters-title {
-      font-size: var(--font-size-xl);
-      font-weight: 600;
-      margin-bottom: var(--space-lg);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .filters-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-lg);
-      margin-bottom: var(--space-lg);
-    }
-
-    .filter-actions {
-      display: flex;
-      gap: var(--space-md);
-      flex-wrap: wrap;
-    }
-
-    /* Map Section */
-    .map-section {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: var(--space-lg);
-      box-shadow: var(--shadow-md);
-      margin-bottom: var(--space-xl);
-    }
-
-    .map-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-lg);
-      flex-wrap: wrap;
-      gap: var(--space-md);
-    }
-
-    .map-header h2 {
-      font-size: var(--font-size-2xl);
-      margin: 0;
-    }
-
-    .map-controls {
-      display: flex;
-      gap: var(--space-sm);
-    }
-
-    .map-control-btn {
-      width: 44px;
-      height: 44px;
-      background: var(--bg-secondary);
-      border: none;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      font-size: var(--font-size-xl);
-      transition: all var(--transition-fast);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .map-control-btn:hover {
-      background: var(--primary-color);
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    #reportMap {
-      height: 500px;
-      border-radius: var(--radius-md);
-      width: 100%;
-      max-width: 100%;
-    }
-
-    #reportMap.fullscreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: var(--z-modal);
-      height: 100vh !important;
-      width: 100vw !important;
-      max-width: none;
-      border-radius: 0;
-      margin: 0;
-    }
-
-    /* Timeline Section */
-    .timeline-section {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: var(--space-xl);
-      box-shadow: var(--shadow-md);
-    }
-
-    .timeline-section h2 {
-      font-size: var(--font-size-2xl);
-      margin-bottom: var(--space-lg);
-    }
-
-    /* Floating Action Button */
-    .report-fab {
-      position: fixed;
-      bottom: var(--space-2xl);
-      right: var(--space-2xl);
-      width: 64px;
-      height: 64px;
-      background: var(--error-color);
-      color: white;
-      border: none;
-      border-radius: var(--radius-full);
-      font-size: 2rem;
-      cursor: pointer;
-      box-shadow: var(--shadow-xl);
-      transition: all var(--transition-base);
-      z-index: var(--z-fixed);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .report-fab:hover {
-      transform: scale(1.1);
-      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
-    }
-
-    /* Mobile Responsive */
+    /* Mobile */
     @media (max-width: 768px) {
-      .page-container {
-        padding: var(--space-md);
-      }
+      .page-container { padding: var(--space-md); }
+      .page-header { padding: var(--space-lg); }
+      .page-header h1 { font-size: var(--font-size-2xl); }
+      #reportMap { height: 300px; }
+      .filters-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .report-fab { bottom: var(--space-lg); right: var(--space-lg); width: 56px; height: 56px; font-size: 1.5rem; }
 
-      .page-header {
-        padding: var(--space-lg);
+      .menu-toggle { display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 100000 !important; }
+      .nav-menu {
+        position: fixed !important; top: 64px !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+        background: white !important; z-index: 99999 !important; flex-direction: column !important; padding: 1rem !important;
+        transform: translateX(100%) !important; opacity: 0 !important;
+        transition: all 0.3s ease !important; pointer-events: none !important; overflow-y: auto !important;
       }
-
-      .page-header h1 {
-        font-size: var(--font-size-3xl);
-      }
-
-      .filters-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .filter-actions {
-        flex-direction: column;
-      }
-
-      .filter-actions .btn {
-        width: 100%;
-      }
-
-      #reportMap {
-        height: 400px;
-      }
-
-      .report-fab {
-        bottom: var(--space-lg);
-        right: var(--space-lg);
-        width: 56px;
-        height: 56px;
-      }
+      .nav-menu.active { transform: translateX(0) !important; opacity: 1 !important; pointer-events: auto !important; }
+      .nav-menu .nav-link { display: flex !important; padding: 1rem !important; color: #1a1a1a !important; }
     }
   </style>
 </head>
 <body>
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay hidden">
-    <div class="spinner"></div>
-  </div>
+  <div id="loadingOverlay" class="loading-overlay hidden"><div class="spinner"></div></div>
 
   <!-- Navigation -->
   <nav class="top-nav" role="navigation">
-    <a href="index.html" class="nav-brand">
-      <span class="nav-brand-icon">🌲</span>
-      <span>Access Nature</span>
-    </a>
-    
-    <button class="menu-toggle" 
-            aria-label="Toggle navigation menu"
-            aria-expanded="false"
-            id="menuToggle">
-      <span class="hamburger-icon">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
+    <a href="index.html" class="nav-brand"><span class="nav-brand-icon">🌲</span><span>Access Nature</span></a>
+    <button class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" id="menuToggle">
+      <span class="hamburger-icon"><span></span><span></span><span></span></span>
     </button>
-    
     <div class="nav-menu" id="navMenu">
-      <a href="index.html" class="nav-link">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-      </a>
-      <a href="tracker.html" class="nav-link">
-        <span class="nav-icon">🗺️</span>
-        <span class="nav-label">Track Trail</span>
-      </a>
-      <a href="reports.html" class="nav-link active">
-        <span class="nav-icon">⚠️</span>
-        <span class="nav-label">Reports</span>
-      </a>
-      <a href="routes.html" class="nav-link">
-        <span class="nav-icon">📂</span>
-        <span class="nav-label">My Routes</span>
-      </a>
-      <a href="accessibility.html" class="nav-link">
-        <span class="nav-icon">♿</span>
-        <span class="nav-label">Survey</span>
-      </a>
-      <a href="profile.html" class="nav-link">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Profile</span>
-      </a>
-      
-      <div class="nav-auth">
-        <button id="authBtn" class="btn btn-primary">Sign In</button>
-      </div>
+      <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+      <a href="tracker.html" class="nav-link"><span class="nav-icon">🗺️</span><span class="nav-label">Track Trail</span></a>
+      <a href="reports.html" class="nav-link active"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></a>
+      <a href="routes.html" class="nav-link"><span class="nav-icon">📂</span><span class="nav-label">My Routes</span></a>
+      <a href="accessibility.html" class="nav-link"><span class="nav-icon">♿</span><span class="nav-label">Survey</span></a>
+      <a href="profile.html" class="nav-link"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+      <div class="nav-auth"><button id="authBtn" class="btn btn-primary">Sign In</button></div>
     </div>
   </nav>
 
   <div class="page-container">
-    <!-- Page Header -->
+    <!-- Header - FIXED icon -->
     <div class="page-header">
-      <h1>⚠️ Accessibility Reports</h1>
+      <h1>📋 Accessibility Reports</h1>
       <p>Report and view accessibility barriers in outdoor spaces and urban areas</p>
     </div>
 
-    <!-- Stats Section -->
+    <!-- Stats -->
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-value" id="totalReports">0</div>
-        <div class="stat-label">Total Reports</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="newReports">0</div>
-        <div class="stat-label">New</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="resolvedReports">0</div>
-        <div class="stat-label">Resolved</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="yourLocation">Detecting...</div>
-        <div class="stat-label">Your Location</div>
-      </div>
+      <div class="stat-card"><div class="stat-value" id="totalReports">0</div><div class="stat-label">Total Reports</div></div>
+      <div class="stat-card"><div class="stat-value" id="newReports">0</div><div class="stat-label">New</div></div>
+      <div class="stat-card"><div class="stat-value" id="resolvedReports">0</div><div class="stat-label">Resolved</div></div>
+      <div class="stat-card"><div class="stat-value" id="yourLocation">Detecting...</div><div class="stat-label">Your Location</div></div>
     </div>
 
-    <!-- Filters Section -->
+    <!-- Filters -->
     <div class="filters-section">
-      <h3 class="filters-title">
-        <span>🔍</span>
-        <span>Filter Reports</span>
-      </h3>
+      <h3 class="filters-title"><span>🔍</span><span>Filter Reports</span></h3>
       <div class="filters-grid">
         <div class="form-group">
           <label for="countryFilter" class="form-label">Country</label>
-          <select id="countryFilter" class="form-select">
-            <option value="">All Countries</option>
-          </select>
+          <div class="autocomplete-container">
+            <input type="text" id="countryFilterInput" class="autocomplete-input" placeholder="Type to search country...">
+            <div id="countryDropdown" class="autocomplete-dropdown"></div>
+          </div>
+          <select id="countryFilter" class="form-select" style="display: none;"><option value="">All Countries</option></select>
         </div>
         <div class="form-group">
           <label for="cityFilter" class="form-label">City</label>
-          <select id="cityFilter" class="form-select">
-            <option value="">All Cities</option>
-          </select>
+          <div class="autocomplete-container">
+            <input type="text" id="cityFilterInput" class="autocomplete-input" placeholder="Type to search city...">
+            <div id="cityDropdown" class="autocomplete-dropdown"></div>
+          </div>
+          <select id="cityFilter" class="form-select" style="display: none;"><option value="">All Cities</option></select>
         </div>
         <div class="form-group">
           <label for="statusFilter" class="form-label">Status</label>
@@ -451,108 +223,202 @@
         </div>
       </div>
       <div class="filter-actions">
-        <button class="btn btn-primary" id="applyFiltersBtn">
-          🔍 Apply Filters
-        </button>
-        <button class="btn btn-secondary" id="resetFiltersBtn">
-          🔄 Reset
-        </button>
-        <button class="btn btn-secondary" id="useMyLocationBtn">
-          📍 Use My Location
-        </button>
+        <button class="btn btn-primary" id="applyFiltersBtn">🔍 Apply Filters</button>
+        <button class="btn btn-secondary" id="resetFiltersBtn">🔄 Reset</button>
+        <button class="btn btn-secondary" id="useMyLocationBtn">📍 Use My Location</button>
       </div>
     </div>
 
-    <!-- Map Section -->
+    <!-- Map -->
     <div class="map-section">
       <div class="map-header">
         <h2>🗺️ Report Map</h2>
         <div class="map-controls">
-          <button class="map-control-btn" id="centerMapBtn" title="Center on my location">
-            📍
-          </button>
-          <button class="map-control-btn" id="fullscreenBtn" title="Toggle fullscreen">
-            ⛶
-          </button>
+          <button class="map-control-btn" id="centerMapBtn" title="Center on my location">📍</button>
+          <button class="map-control-btn" id="fullscreenBtn" title="Toggle fullscreen">⛶</button>
         </div>
       </div>
       <div id="reportMap"></div>
     </div>
 
-    <!-- Timeline Section -->
+    <!-- Timeline -->
     <div class="timeline-section">
       <h2>📋 Recent Reports</h2>
       <div id="reportTimeline"></div>
     </div>
   </div>
 
-  <!-- Report FAB -->
-  <button class="report-fab" id="reportFabBtn" title="Report an issue">
-    ⚠️
-  </button>
+  <!-- FAB -->
+  <button class="report-fab" id="reportFabBtn" title="Report an issue">📋</button>
 
   <!-- Report Detail Modal -->
-  <div id="reportDetailModal" class="hidden">
-    <div class="modal-content">
-      <!-- Dynamically populated by access-report-main.js -->
-    </div>
-  </div>
+  <div id="reportDetailModal" class="hidden"><div class="modal-content"></div></div>
 
-  <!-- Firebase SDK -->
+  <!-- Scripts -->
   <script type="module" src="src/firebase-setup.js"></script>
-
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-  <!-- Universal Navigation & Auth -->
   <script src="universal-navigation.js"></script>
   <script src="auth-status-handler.js"></script>
-
-  <!-- App Scripts -->
-
   <script type="module" src="src/helpers/toasts.js"></script>
   <script type="module" src="src/helpers/modals.js"></script>
   <script type="module" src="reports-page.js"></script>
 
-  <!-- Report Modal Fix Script -->
+  <!-- Page Functionality -->
   <script>
-    // Ensure modal works correctly
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🔧 Setting up report modal handlers...');
-      
-      // Close modal when clicking backdrop
+      console.log('📋 Reports page initializing...');
+
+      const reportModal = document.getElementById('reportDetailModal');
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+
+      // Loading State Helpers
+      window.showLoadingState = function(container, message = 'Loading...') {
+        if (typeof container === 'string') container = document.querySelector(container);
+        if (!container) return;
+        container.classList.add('loading-data');
+        container.setAttribute('data-original-content', container.innerHTML);
+        container.innerHTML = `<div class="loading-spinner-inline"><span>${message}</span></div>`;
+      };
+
+      window.hideLoadingState = function(container) {
+        if (typeof container === 'string') container = document.querySelector(container);
+        if (!container) return;
+        container.classList.remove('loading-data');
+        const original = container.getAttribute('data-original-content');
+        if (original) { container.innerHTML = original; container.removeAttribute('data-original-content'); }
+      };
+
+      // Autocomplete
+      class AutocompleteDropdown {
+        constructor(inputId, dropdownId, hiddenSelectId, options = {}) {
+          this.input = document.getElementById(inputId);
+          this.dropdown = document.getElementById(dropdownId);
+          this.hiddenSelect = document.getElementById(hiddenSelectId);
+          this.options = { data: [], onSelect: () => {}, minChars: 1, ...options };
+          this.highlightedIndex = -1;
+          this.filteredData = [];
+          if (this.input && this.dropdown) this.init();
+        }
+
+        init() {
+          this.input.addEventListener('input', () => this.onInput());
+          this.input.addEventListener('focus', () => this.onInput());
+          this.input.addEventListener('blur', () => setTimeout(() => this.hideDropdown(), 200));
+          this.input.addEventListener('keydown', (e) => this.onKeydown(e));
+        }
+
+        onInput() {
+          const value = this.input.value.toLowerCase().trim();
+          if (value.length < this.options.minChars) { this.hideDropdown(); return; }
+          this.filteredData = this.options.data.filter(item => {
+            const text = typeof item === 'string' ? item : item.label || item.name || item.value;
+            return text.toLowerCase().includes(value);
+          });
+          this.renderDropdown();
+        }
+
+        renderDropdown() {
+          if (this.filteredData.length === 0) {
+            this.dropdown.innerHTML = '<div class="autocomplete-no-results">No results found</div>';
+            this.dropdown.classList.add('active');
+            return;
+          }
+          this.dropdown.innerHTML = this.filteredData.map((item, i) => {
+            const text = typeof item === 'string' ? item : item.label || item.name || item.value;
+            return `<div class="autocomplete-item ${i === this.highlightedIndex ? 'highlighted' : ''}" data-index="${i}">${text}</div>`;
+          }).join('');
+          this.dropdown.querySelectorAll('.autocomplete-item').forEach(el => {
+            el.addEventListener('click', () => this.selectItem(parseInt(el.dataset.index)));
+          });
+          this.dropdown.classList.add('active');
+        }
+
+        onKeydown(e) {
+          if (!this.dropdown.classList.contains('active')) return;
+          if (e.key === 'ArrowDown') { e.preventDefault(); this.highlightedIndex = Math.min(this.highlightedIndex + 1, this.filteredData.length - 1); this.renderDropdown(); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); this.highlightedIndex = Math.max(this.highlightedIndex - 1, 0); this.renderDropdown(); }
+          else if (e.key === 'Enter') { e.preventDefault(); if (this.highlightedIndex >= 0) this.selectItem(this.highlightedIndex); }
+          else if (e.key === 'Escape') this.hideDropdown();
+        }
+
+        selectItem(index) {
+          const item = this.filteredData[index];
+          const text = typeof item === 'string' ? item : item.label || item.name || item.value;
+          const value = typeof item === 'string' ? item : item.value || item.label || item.name;
+          this.input.value = text;
+          if (this.hiddenSelect) { this.hiddenSelect.value = value; this.hiddenSelect.dispatchEvent(new Event('change')); }
+          this.hideDropdown();
+          this.options.onSelect(item);
+        }
+
+        hideDropdown() { this.dropdown.classList.remove('active'); this.highlightedIndex = -1; }
+        setData(data) { this.options.data = data; }
+      }
+
+      window.AutocompleteDropdown = AutocompleteDropdown;
+
+      // Initialize autocompletes (will be populated when data loads)
+      window.countryAutocomplete = new AutocompleteDropdown('countryFilterInput', 'countryDropdown', 'countryFilter', {
+        onSelect: (item) => console.log('🌍 Country selected:', item)
+      });
+      window.cityAutocomplete = new AutocompleteDropdown('cityFilterInput', 'cityDropdown', 'cityFilter', {
+        onSelect: (item) => console.log('🏙️ City selected:', item)
+      });
+
+      // Modal Handlers
       document.addEventListener('click', (e) => {
-        const modal = document.getElementById('reportDetailModal');
-        if (modal && e.target === modal && !modal.classList.contains('hidden')) {
-          console.log('🚪 Closing modal via backdrop click');
-          modal.classList.add('hidden');
+        if (reportModal && e.target === reportModal && !reportModal.classList.contains('hidden')) {
+          reportModal.classList.add('hidden');
         }
       });
-      
-      // Close modal on escape key
+
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          const modal = document.getElementById('reportDetailModal');
-          if (modal && !modal.classList.contains('hidden')) {
-            console.log('🚪 Closing modal via Escape key');
-            modal.classList.add('hidden');
+        if (e.key === 'Escape' && reportModal && !reportModal.classList.contains('hidden')) {
+          reportModal.classList.add('hidden');
+        }
+      });
+
+      reportModal?.addEventListener('click', (e) => {
+        const content = reportModal.querySelector('.modal-content');
+        if (content && content.contains(e.target)) e.stopPropagation();
+      });
+
+      // Monitor for lightbox - ensure z-index
+      const lightboxObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType === 1 && (node.classList?.contains('lightbox') || node.classList?.contains('photo-lightbox') || node.id?.includes('lightbox'))) {
+              node.style.zIndex = '9999999';
+            }
           }
         }
       });
-      
-      // Prevent click propagation on modal content
-      const modal = document.getElementById('reportDetailModal');
-      if (modal) {
-        modal.addEventListener('click', (e) => {
-          const content = modal.querySelector('.modal-content');
-          if (content && content.contains(e.target)) {
-            e.stopPropagation();
-          }
+      lightboxObserver.observe(document.body, { childList: true, subtree: true });
+
+      // Hamburger Menu
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+          menuToggle.classList.toggle('active');
+          navMenu.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+        });
+
+        navMenu.querySelectorAll('a.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('menu-open');
+          });
         });
       }
-      
-      console.log('✅ Report modal handlers ready');
+
+      console.log('✅ Reports page initialized');
     });
   </script>
 </body>

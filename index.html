@@ -12,12 +12,14 @@
   <!-- External CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
   
-  <!-- NEW DESIGN SYSTEM -->
+  <!-- Design System -->
   <link rel="stylesheet" href="access-nature-design-system.css">
   
-  <!-- Page-Specific Styles -->
   <style>
-    /* Keep your original landing page styles */
+    /* ==========================================
+       INDEX PAGE STYLES - CLEANED & CONSOLIDATED
+       ========================================== */
+    
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
@@ -29,16 +31,6 @@
       padding: var(--space-3xl) var(--space-xl);
       text-align: center;
       color: white;
-    }
-
-    .hero-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      opacity: 0.1;
-      pointer-events: none;
     }
 
     .hero-content {
@@ -61,7 +53,6 @@
       margin-bottom: var(--space-2xl);
     }
 
-    /* Auth status in hero */
     .auth-status-landing {
       margin-top: var(--space-2xl);
       display: flex;
@@ -97,10 +88,7 @@
       box-shadow: var(--shadow-xl);
     }
 
-    .nav-card-icon {
-      font-size: 3rem;
-      margin-bottom: var(--space-lg);
-    }
+    .nav-card-icon { font-size: 3rem; margin-bottom: var(--space-lg); }
 
     .nav-card h2, .nav-card h3 {
       font-size: var(--font-size-2xl);
@@ -130,18 +118,9 @@
       color: var(--text-secondary);
     }
 
-    /* Quick Search */
-    .quick-search {
-      display: flex;
-      gap: var(--space-sm);
-      margin-top: var(--space-lg);
-    }
+    .quick-search { display: flex; gap: var(--space-sm); margin-top: var(--space-lg); }
+    .quick-search input { flex: 1; }
 
-    .quick-search input {
-      flex: 1;
-    }
-
-    /* Tracker Stats */
     .tracker-stats {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -164,10 +143,7 @@
       margin-bottom: var(--space-xs);
     }
 
-    .stat-label {
-      font-size: var(--font-size-sm);
-      color: var(--text-secondary);
-    }
+    .stat-label { font-size: var(--font-size-sm); color: var(--text-secondary); }
 
     /* Community Section */
     .community-section {
@@ -175,16 +151,8 @@
       padding: var(--space-3xl) var(--space-xl);
     }
 
-    .community-container {
-      max-width: var(--max-width-xl);
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .community-container h3 {
-      font-size: var(--font-size-3xl);
-      margin-bottom: var(--space-2xl);
-    }
+    .community-container { max-width: var(--max-width-xl); margin: 0 auto; text-align: center; }
+    .community-container h3 { font-size: var(--font-size-3xl); margin-bottom: var(--space-2xl); }
 
     .community-stats {
       display: grid;
@@ -192,9 +160,7 @@
       gap: var(--space-xl);
     }
 
-    .community-stat {
-      text-align: center;
-    }
+    .community-stat { text-align: center; }
 
     .stat-big {
       display: block;
@@ -204,27 +170,12 @@
       margin-bottom: var(--space-sm);
     }
 
-    .stat-desc {
-      font-size: var(--font-size-base);
-      color: var(--text-secondary);
-    }
+    .stat-desc { font-size: var(--font-size-base); color: var(--text-secondary); }
 
     /* Featured Section */
-    .featured-section {
-      background: white;
-      padding: var(--space-3xl) var(--space-xl);
-    }
-
-    .featured-container {
-      max-width: var(--max-width-xl);
-      margin: 0 auto;
-    }
-
-    .featured-container h3 {
-      font-size: var(--font-size-3xl);
-      text-align: center;
-      margin-bottom: var(--space-2xl);
-    }
+    .featured-section { background: white; padding: var(--space-3xl) var(--space-xl); }
+    .featured-container { max-width: var(--max-width-xl); margin: 0 auto; }
+    .featured-container h3 { font-size: var(--font-size-3xl); text-align: center; margin-bottom: var(--space-2xl); }
 
     .featured-grid {
       display: grid;
@@ -233,22 +184,11 @@
       margin-bottom: var(--space-2xl);
     }
 
-    .load-more-btn {
-      display: block;
-      margin: 0 auto;
-    }
+    .load-more-btn { display: block; margin: 0 auto; }
 
     /* Footer */
-    .footer-section {
-      background: var(--text-color);
-      color: white;
-      padding: var(--space-3xl) var(--space-xl);
-    }
-
-    .footer-container {
-      max-width: var(--max-width-xl);
-      margin: 0 auto;
-    }
+    .footer-section { background: var(--text-color); color: white; padding: var(--space-3xl) var(--space-xl); }
+    .footer-container { max-width: var(--max-width-xl); margin: 0 auto; }
 
     .footer-content {
       display: grid;
@@ -257,30 +197,11 @@
       margin-bottom: var(--space-2xl);
     }
 
-    .footer-brand h4 {
-      color: white;
-      margin-bottom: var(--space-md);
-    }
-
-    .footer-brand p {
-      color: rgba(255,255,255,0.7);
-    }
-
-    .footer-links {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-    }
-
-    .footer-links a {
-      color: rgba(255,255,255,0.7);
-      text-decoration: none;
-      transition: color var(--transition-fast);
-    }
-
-    .footer-links a:hover {
-      color: white;
-    }
+    .footer-brand h4 { color: white; margin-bottom: var(--space-md); }
+    .footer-brand p { color: rgba(255,255,255,0.7); }
+    .footer-links { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; transition: color var(--transition-fast); }
+    .footer-links a:hover { color: white; }
 
     .footer-bottom {
       text-align: center;
@@ -289,27 +210,83 @@
       color: rgba(255,255,255,0.7);
     }
 
+    /* ===========================================
+       TRAIL BROWSER MODAL - FIXED
+       =========================================== */
+    #trailBrowserModal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    #trailBrowserModal.hidden { display: none !important; }
+
+    #trailBrowserModal .modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    #trailBrowserModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    #trailBrowserModal .modal-close {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+      line-height: 1;
+    }
+
+    #trailBrowserModal .modal-close:hover { color: #333; }
+
+    .filter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+
+    #trailResults { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-height: 50vh; overflow-y: auto; }
+
     /* Mobile Responsive */
     @media (max-width: 768px) {
-      .hero-title {
-        font-size: var(--font-size-4xl);
+      .hero-title { font-size: var(--font-size-4xl); }
+      .hero-subtitle { font-size: var(--font-size-lg); }
+      .nav-card h2 { font-size: var(--font-size-xl); }
+      .community-stats { grid-template-columns: repeat(2, 1fr); }
+      .featured-grid { grid-template-columns: 1fr; }
+      .filter-grid { grid-template-columns: 1fr; }
+      #trailResults { grid-template-columns: 1fr; }
+
+      .menu-toggle { display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 100000 !important; }
+
+      .nav-menu {
+        position: fixed !important;
+        top: 64px !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+        background: white !important;
+        z-index: 99999 !important;
+        flex-direction: column !important;
+        padding: 1rem !important;
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        transition: all 0.3s ease !important;
+        pointer-events: none !important;
+        overflow-y: auto !important;
       }
 
-      .hero-subtitle {
-        font-size: var(--font-size-lg);
-      }
-
-      .nav-card h2 {
-        font-size: var(--font-size-xl);
-      }
-
-      .community-stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .featured-grid {
-        grid-template-columns: 1fr;
-      }
+      .nav-menu.active { transform: translateX(0) !important; opacity: 1 !important; pointer-events: auto !important; }
+      .nav-menu .nav-link { display: flex !important; padding: 1rem !important; color: #1a1a1a !important; }
     }
   </style>
 </head>
@@ -322,57 +299,27 @@
       <span>Access Nature</span>
     </a>
     
-    <button class="menu-toggle" 
-            aria-label="Toggle navigation menu"
-            aria-expanded="false"
-            id="menuToggle">
-      <span class="hamburger-icon">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
+    <button class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" id="menuToggle">
+      <span class="hamburger-icon"><span></span><span></span><span></span></span>
     </button>
     
     <div class="nav-menu" id="navMenu">
-      <a href="index.html" class="nav-link active">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-      </a>
-      <a href="tracker.html" class="nav-link">
-        <span class="nav-icon">🗺️</span>
-        <span class="nav-label">Track Trail</span>
-      </a>
-      <a href="reports.html" class="nav-link">
-        <span class="nav-icon">⚠️</span>
-        <span class="nav-label">Reports</span>
-      </a>
-      <a href="routes.html" class="nav-link">
-        <span class="nav-icon">📂</span>
-        <span class="nav-label">My Routes</span>
-      </a>
-      <a href="accessibility.html" class="nav-link">
-        <span class="nav-icon">♿</span>
-        <span class="nav-label">Survey</span>
-      </a>
-      <a href="profile.html" class="nav-link">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Profile</span>
-      </a>
-      
-      <div class="nav-auth">
-        <button id="authBtn" class="btn btn-primary">Sign In</button>
-      </div>
+      <a href="index.html" class="nav-link active"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+      <a href="tracker.html" class="nav-link"><span class="nav-icon">🗺️</span><span class="nav-label">Track Trail</span></a>
+      <button class="nav-link" id="browseTrailsNavBtn" type="button"><span class="nav-icon">🔍</span><span class="nav-label">Browse Trails</span></button>
+      <a href="reports.html" class="nav-link"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></a>
+      <a href="routes.html" class="nav-link"><span class="nav-icon">📂</span><span class="nav-label">My Routes</span></a>
+      <a href="accessibility.html" class="nav-link"><span class="nav-icon">♿</span><span class="nav-label">Survey</span></a>
+      <a href="profile.html" class="nav-link"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+      <div class="nav-auth"><button id="authBtn" class="btn btn-primary">Sign In</button></div>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <div class="hero-section">
-    <div class="hero-background"></div>
     <div class="hero-content">
       <h1 class="hero-title">🌲 Access Nature</h1>
       <p class="hero-subtitle">Making outdoor spaces accessible for everyone</p>
-      
-      <!-- Auth Status (kept for backward compatibility) -->
       <div id="authStatusBar" class="auth-status-landing">
         <div id="userInfo" class="user-info hidden">
           <span class="user-greeting">Welcome back, <span id="userEmail"></span>!</span>
@@ -389,14 +336,11 @@
   <div class="main-navigation">
     <div class="nav-container">
       
-      <!-- Accessibility Reports Card -->
+      <!-- Accessibility Reports Card - FIXED icon -->
       <div class="nav-card" onclick="window.location.href='reports.html'">
-        <div class="nav-card-icon">⚠️</div>
+        <div class="nav-card-icon">📋</div>
         <h3 class="nav-card-title">Accessibility Reports</h3>
-        <p class="nav-card-description">
-          Report and view accessibility barriers in outdoor spaces and urban areas. 
-          Help build a more accessible world.
-        </p>
+        <p class="nav-card-description">Report and view accessibility barriers in outdoor spaces and urban areas. Help build a more accessible world.</p>
         <div class="nav-card-footer">
           <span class="nav-card-badge">🗺️ Interactive Map</span>
           <span class="nav-card-badge">📊 Real-time Data</span>
@@ -408,21 +352,16 @@
         <div class="nav-card-icon">🔍</div>
         <h2>Discover Accessible Trails</h2>
         <p>Browse community-contributed accessible trail guides with detailed accessibility information, photos, and reviews.</p>
-        
         <div class="nav-card-features">
           <span class="feature-tag">♿ Wheelchair Access</span>
           <span class="feature-tag">📷 Photos & Notes</span>
           <span class="feature-tag">⭐ Community Reviews</span>
           <span class="feature-tag">🗺️ Interactive Maps</span>
         </div>
-        
-        <button class="btn btn-primary btn-lg" onclick="openTrailBrowser()">
-          🔍 Browse Trail Guides
-        </button>
-        
+        <button class="btn btn-primary btn-lg" id="browseTrailsBtn">🔍 Browse Trail Guides</button>
         <div class="quick-search">
           <input type="text" id="quickSearch" placeholder="Quick search trails..." maxlength="50" class="form-input">
-          <button onclick="quickSearch()" class="btn btn-primary">Search</button>
+          <button id="quickSearchBtn" class="btn btn-primary">Search</button>
         </div>
       </div>
 
@@ -431,53 +370,30 @@
         <div class="nav-card-icon">📍</div>
         <h2>Map a New Trail</h2>
         <p>Use GPS tracking to document new accessible routes. Record accessibility features, take photos, and create trail guides for the community.</p>
-        
         <div class="nav-card-features">
           <span class="feature-tag">📱 GPS Tracking</span>
           <span class="feature-tag">📝 Accessibility Survey</span>
           <span class="feature-tag">📷 Photo Documentation</span>
           <span class="feature-tag">☁️ Cloud Sync</span>
         </div>
-        
-        <button class="btn btn-success btn-lg" onclick="openTracker()">
-          📍 Start Tracking
-        </button>
-        
+        <button class="btn btn-success btn-lg" id="startTrackingBtn">📍 Start Tracking</button>
         <div class="tracker-stats">
-          <div class="stat-item">
-            <span class="stat-number" id="totalRoutes">0</span>
-            <span class="stat-label">Routes Mapped</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number" id="totalDistance">0</span>
-            <span class="stat-label">km Documented</span>
-          </div>
+          <div class="stat-item"><span class="stat-number" id="totalRoutes">0</span><span class="stat-label">Routes Mapped</span></div>
+          <div class="stat-item"><span class="stat-number" id="totalDistance">0</span><span class="stat-label">km Documented</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Community Stats Section -->
+  <!-- Community Stats -->
   <div class="community-section">
     <div class="community-container">
       <h3>🌍 Community Impact</h3>
       <div class="community-stats">
-        <div class="community-stat">
-          <span class="stat-big" id="publicGuides">0</span>
-          <span class="stat-desc">Public Trail Guides</span>
-        </div>
-        <div class="community-stat">
-          <span class="stat-big" id="totalKm">0</span>
-          <span class="stat-desc">Kilometers Mapped</span>
-        </div>
-        <div class="community-stat">
-          <span class="stat-big" id="accessibleTrails">0</span>
-          <span class="stat-desc">Wheelchair Accessible</span>
-        </div>
-        <div class="community-stat">
-          <span class="stat-big" id="totalUsers">0</span>
-          <span class="stat-desc">Contributors</span>
-        </div>
+        <div class="community-stat"><span class="stat-big" id="publicGuides">0</span><span class="stat-desc">Public Trail Guides</span></div>
+        <div class="community-stat"><span class="stat-big" id="totalKm">0</span><span class="stat-desc">Kilometers Mapped</span></div>
+        <div class="community-stat"><span class="stat-big" id="accessibleTrails">0</span><span class="stat-desc">Wheelchair Accessible</span></div>
+        <div class="community-stat"><span class="stat-big" id="totalUsers">0</span><span class="stat-desc">Contributors</span></div>
       </div>
     </div>
   </div>
@@ -486,10 +402,8 @@
   <div class="featured-section">
     <div class="featured-container">
       <h3>⭐ Featured Accessible Trails</h3>
-      <div id="featuredTrails" class="featured-grid">
-        <!-- Dynamically populated -->
-      </div>
-      <button class="btn btn-primary load-more-btn" onclick="loadMoreFeatured()">Load More Trails</button>
+      <div id="featuredTrails" class="featured-grid"></div>
+      <button class="btn btn-primary load-more-btn" id="loadMoreFeaturedBtn">Load More Trails</button>
     </div>
   </div>
 
@@ -497,216 +411,144 @@
   <footer class="footer-section">
     <div class="footer-container">
       <div class="footer-content">
-        <div class="footer-brand">
-          <h4>🌲 Access Nature</h4>
-          <p>Making outdoor spaces accessible for everyone</p>
-        </div>
+        <div class="footer-brand"><h4>🌲 Access Nature</h4><p>Making outdoor spaces accessible for everyone</p></div>
         <div class="footer-links">
-          <a href="#" onclick="showAbout(); return false;">About</a>
-          <a href="#" onclick="showPrivacy(); return false;">Privacy</a>
-          <a href="#" onclick="showContact(); return false;">Contact</a>
-          <a href="#" onclick="showHelp(); return false;">Help</a>
+          <a href="#" id="aboutLink">About</a>
+          <a href="#" id="privacyLink">Privacy</a>
+          <a href="#" id="contactLink">Contact</a>
+          <a href="#" id="helpLink">Help</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>© 2024 Access Nature. Making nature accessible for everyone.</p>
-      </div>
+      <div class="footer-bottom"><p>© 2024 Access Nature. Making nature accessible for everyone.</p></div>
     </div>
   </footer>
 
-  <!-- Trail Browser Modal (from your original code) -->
-  <div id="trailBrowserModal" class="modal-backdrop hidden">
+  <!-- Trail Browser Modal -->
+  <div id="trailBrowserModal" class="hidden">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">🔍 Browse Trail Guides</h2>
-        <button class="modal-close" onclick="closeTrailBrowser()">×</button>
+        <button class="modal-close" id="closeTrailBrowserBtn">×</button>
       </div>
       <div class="modal-body">
-        <!-- Search and Filters -->
-        <div class="form-group">
-          <input type="text" id="trailSearch" class="form-input" placeholder="Search trails...">
+        <div class="form-group"><input type="text" id="trailSearch" class="form-input" placeholder="Search trails..."></div>
+        <div class="filter-grid">
+          <div class="form-group"><select id="filterAccessibility" class="form-select"><option value="">All Accessibility</option><option value="wheelchair">Wheelchair</option><option value="limited">Limited Mobility</option></select></div>
+          <div class="form-group"><select id="filterDifficulty" class="form-select"><option value="">All Difficulty</option><option value="easy">Easy</option><option value="moderate">Moderate</option><option value="hard">Hard</option></select></div>
+          <div class="form-group"><button id="applyFiltersBtn" class="btn btn-primary" style="width: 100%;">Apply Filters</button></div>
         </div>
-        
-        <div class="grid grid-cols-3" style="margin-bottom: var(--space-lg);">
-          <div class="form-group">
-            <select id="filterAccessibility" class="form-select">
-              <option value="">All Accessibility</option>
-              <option value="wheelchair">Wheelchair</option>
-              <option value="limited">Limited Mobility</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <select id="filterDifficulty" class="form-select">
-              <option value="">All Difficulty</option>
-              <option value="easy">Easy</option>
-              <option value="moderate">Moderate</option>
-              <option value="hard">Hard</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <button onclick="applyFilters()" class="btn btn-primary" style="width: 100%;">Apply Filters</button>
-          </div>
-        </div>
-        
-        <!-- Results -->
-        <div id="trailResults" class="grid grid-cols-2" style="gap: var(--space-md); max-height: 50vh; overflow-y: auto;">
-          <!-- Dynamically populated -->
-        </div>
-        
-        <button onclick="loadMoreResults()" class="btn btn-secondary" style="width: 100%; margin-top: var(--space-md);">Load More</button>
+        <div id="trailResults"></div>
+        <button id="loadMoreResultsBtn" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Load More</button>
       </div>
     </div>
   </div>
 
-  <!-- Firebase Setup -->
-  <script type="module" src="src/firebase-setup.js"></script>
+  <!-- Toast & Loading -->
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="loadingOverlay" class="loading-overlay hidden"><div class="spinner"></div></div>
 
-  <!-- Universal Navigation & Auth -->
+  <!-- Scripts -->
+  <script type="module" src="src/firebase-setup.js"></script>
   <script src="universal-navigation.js"></script>
   <script src="auth-status-handler.js"></script>
 
-  <!-- Load UI helpers as modules -->
   <script type="module">
     import toast from './src/helpers/toasts.js';
     import modal from './src/helpers/modals.js';
     import { showLoading, hideLoading } from './src/helpers/loading.js';
-    
-    // Make globally available
     window.toast = toast;
     window.modal = modal;
     window.showLoading = showLoading;
     window.hideLoading = hideLoading;
-    
-    console.log('✅ UI systems loaded');
   </script>
 
-  <!-- Your App Scripts -->
   <script type="module" src="src/landing.js"></script>
   <script type="module" src="src/features/auth.js"></script>
 
-  <!-- Navigation functions -->
+  <!-- Page Functionality -->
   <script>
-    function openTracker() {
-      window.location.href = 'tracker.html';
-    }
-
-    function openTrailBrowser() {
-      const modal = document.getElementById('trailBrowserModal');
-      if (modal) {
-        modal.classList.remove('hidden');
-      }
-    }
-
-    function closeTrailBrowser() {
-      const modal = document.getElementById('trailBrowserModal');
-      if (modal) {
-        modal.classList.add('hidden');
-      }
-    }
-
-    function quickSearch() {
-      const query = document.getElementById('quickSearch')?.value;
-      if (query && query.trim()) {
-        openTrailBrowser();
-        const trailSearch = document.getElementById('trailSearch');
-        if (trailSearch) {
-          trailSearch.value = query;
-          setTimeout(() => {
-            if (typeof searchTrails === 'function') {
-              searchTrails();
-            }
-          }, 100);
-        }
-      } else {
-        if (typeof toast !== 'undefined') {
-          toast.warning('Please enter a search term');
-        }
-      }
-    }
-
-    function searchTrails() {
-      if (window.LandingPageController && window.LandingPageController.searchTrails) {
-        window.LandingPageController.searchTrails();
-      }
-    }
-
-    function applyFilters() {
-      if (window.LandingPageController && window.LandingPageController.applyFilters) {
-        window.LandingPageController.applyFilters();
-      }
-    }
-
-    function loadMoreResults() {
-      if (window.LandingPageController && window.LandingPageController.loadMoreResults) {
-        window.LandingPageController.loadMoreResults();
-      }
-    }
-
-    function loadMoreFeatured() {
-      if (window.LandingPageController && window.LandingPageController.loadMoreFeatured) {
-        window.LandingPageController.loadMoreFeatured();
-      } else {
-        if (typeof toast !== 'undefined') {
-          toast.info('Loading trail guides...');
-        }
-      }
-    }
-
-    // Footer links
-    function showAbout() {
-      if (typeof modal !== 'undefined') {
-        modal.alert(
-          'Access Nature is a community-driven platform dedicated to making outdoor spaces accessible for everyone.',
-          'About Access Nature'
-        );
-      }
-    }
-
-    function showPrivacy() {
-      if (typeof modal !== 'undefined') {
-        modal.alert(
-          'Your privacy is important to us. We only collect data necessary to provide our services.',
-          'Privacy Policy'
-        );
-      }
-    }
-
-    function showContact() {
-      if (typeof modal !== 'undefined') {
-        modal.alert(
-          'Email: support@accessnature.org',
-          'Contact Us'
-        );
-      }
-    }
-
-    function showHelp() {
-      if (typeof modal !== 'undefined') {
-        modal.alert(
-          'Need help? Contact support at support@accessnature.org',
-          'Help & Support'
-        );
-      }
-    }
-
-    // Close modal on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const modal = document.getElementById('trailBrowserModal');
-        if (modal && !modal.classList.contains('hidden')) {
-          closeTrailBrowser();
-        }
-      }
-    });
-
-    // Ensure modal starts hidden
     document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('trailBrowserModal');
-      if (modal && !modal.classList.contains('hidden')) {
-        modal.classList.add('hidden');
+      console.log('🏠 Index page initializing...');
+
+      const trailBrowserModal = document.getElementById('trailBrowserModal');
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+
+      // Trail Browser Modal
+      function openTrailBrowser() {
+        if (trailBrowserModal) trailBrowserModal.classList.remove('hidden');
       }
+
+      function closeTrailBrowser() {
+        if (trailBrowserModal) trailBrowserModal.classList.add('hidden');
+      }
+
+      window.openTrailBrowser = openTrailBrowser;
+      window.closeTrailBrowser = closeTrailBrowser;
+
+      // Event Listeners
+      document.getElementById('browseTrailsBtn')?.addEventListener('click', openTrailBrowser);
+      document.getElementById('browseTrailsNavBtn')?.addEventListener('click', () => {
+        if (menuToggle && navMenu?.classList.contains('active')) {
+          menuToggle.classList.remove('active');
+          navMenu.classList.remove('active');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('menu-open');
+        }
+        setTimeout(openTrailBrowser, 100);
+      });
+      document.getElementById('closeTrailBrowserBtn')?.addEventListener('click', closeTrailBrowser);
+      trailBrowserModal?.addEventListener('click', (e) => { if (e.target === trailBrowserModal) closeTrailBrowser(); });
+      document.getElementById('startTrackingBtn')?.addEventListener('click', () => { window.location.href = 'tracker.html'; });
+
+      document.getElementById('quickSearchBtn')?.addEventListener('click', () => {
+        const query = document.getElementById('quickSearch')?.value;
+        if (query?.trim()) {
+          openTrailBrowser();
+          const trailSearch = document.getElementById('trailSearch');
+          if (trailSearch) {
+            trailSearch.value = query;
+            if (window.LandingPageController?.searchTrails) setTimeout(() => window.LandingPageController.searchTrails(), 100);
+          }
+        } else if (window.toast) window.toast.warning('Please enter a search term');
+      });
+
+      document.getElementById('applyFiltersBtn')?.addEventListener('click', () => { window.LandingPageController?.applyFilters?.(); });
+      document.getElementById('loadMoreResultsBtn')?.addEventListener('click', () => { window.LandingPageController?.loadMoreResults?.(); });
+      document.getElementById('loadMoreFeaturedBtn')?.addEventListener('click', () => { window.LandingPageController?.loadMoreFeatured?.() || window.toast?.info('Loading trail guides...'); });
+
+      // Footer
+      document.getElementById('aboutLink')?.addEventListener('click', (e) => { e.preventDefault(); window.modal?.alert('Access Nature is a community-driven platform dedicated to making outdoor spaces accessible for everyone.', 'About Access Nature'); });
+      document.getElementById('privacyLink')?.addEventListener('click', (e) => { e.preventDefault(); window.modal?.alert('Your privacy is important to us. We only collect data necessary to provide our services.', 'Privacy Policy'); });
+      document.getElementById('contactLink')?.addEventListener('click', (e) => { e.preventDefault(); window.modal?.alert('Email: support@accessnature.org', 'Contact Us'); });
+      document.getElementById('helpLink')?.addEventListener('click', (e) => { e.preventDefault(); window.modal?.alert('Need help? Contact support at support@accessnature.org', 'Help & Support'); });
+
+      // Escape key
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && trailBrowserModal && !trailBrowserModal.classList.contains('hidden')) closeTrailBrowser(); });
+
+      // Hamburger Menu
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+          menuToggle.classList.toggle('active');
+          navMenu.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+        });
+
+        navMenu.querySelectorAll('a.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('menu-open');
+          });
+        });
+      }
+
+      console.log('✅ Index page initialized');
     });
   </script>
-
 </body>
 </html>

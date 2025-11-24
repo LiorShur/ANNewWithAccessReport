@@ -6,39 +6,22 @@
   <meta name="description" content="Access Nature - Track accessible trails with GPS">
   <title>Trail Tracker - Access Nature</title>
   
-  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
-  
-  <!-- External CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css">
-  
-  <!-- NEW DESIGN SYSTEM (replaces multiple CSS files) -->
   <link rel="stylesheet" href="access-nature-design-system.css">
   
-  <!-- Page-Specific Styles -->
   <style>
-    /* Tracker-specific overrides and additions */
-    body {
-      overflow: hidden; /* Prevent scroll on desktop */
-      height: 100vh;
-      padding-top: 64px; /* Match nav height */
-    }
+    /* ==========================================
+       TRACKER PAGE STYLES - CLEANED & FIXED
+       ========================================== */
+    
+    body { overflow: hidden; height: 100vh; padding-top: 64px; }
+    body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
-    /* Map Container */
-    .map-container {
-      position: fixed;
-      top: 64px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: var(--z-base);
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+    /* Map */
+    .map-container { position: fixed; top: 64px; left: 0; right: 0; bottom: 0; z-index: 1; }
+    #map { width: 100%; height: 100%; }
 
     /* Top Control Bar */
     .top-bar {
@@ -47,336 +30,182 @@
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: var(--space-sm);
+      gap: 0.5rem;
       align-items: center;
       background: white;
-      padding: var(--space-sm) var(--space-md);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
-      z-index: var(--z-fixed);
-      flex-wrap: wrap;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 1000;
     }
 
-    .stat-display {
-      font-weight: 600;
-      color: var(--text-color);
-      font-size: var(--font-size-sm);
-      white-space: nowrap;
-    }
+    .stat-display { font-weight: 600; color: var(--text-color); font-size: 0.875rem; white-space: nowrap; }
+    .separator { color: var(--border-color); user-select: none; }
 
-    .separator {
-      color: var(--border-color);
-      user-select: none;
-    }
-
-    /* Floating Controls */
-    .floating-left {
-      position: fixed;
-      left: var(--space-md);
-      top: 140px;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-      z-index: var(--z-fixed);
-    }
-
-    .floating-right {
-      position: fixed;
-      right: var(--space-md);
-      top: 140px;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-      z-index: var(--z-fixed);
-    }
-
-    /* Compass Container */
+    /* Compass - Centered Below Top Bar */
     .compass-container {
       position: fixed;
-      top: 140px;
-      right: var(--space-xl);
+      top: 125px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      gap: var(--space-sm);
-      z-index: var(--z-fixed);
+      gap: 0.5rem;
+      z-index: 1000;
     }
 
     .compass-display {
       position: relative;
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
       background: white;
-      border-radius: var(--radius-full);
-      box-shadow: var(--shadow-lg);
+      border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
 
-    .compass-ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: var(--radius-full);
-      border: 2px solid var(--primary-color);
-    }
-
-    .compass-cardinal {
-      position: absolute;
-      font-size: var(--font-size-xs);
-      font-weight: 700;
-      color: var(--primary-color);
-    }
-
-    .compass-cardinal.north { top: 4px; left: 50%; transform: translateX(-50%); }
-    .compass-cardinal.east { right: 4px; top: 50%; transform: translateY(-50%); }
-    .compass-cardinal.south { bottom: 4px; left: 50%; transform: translateX(-50%); }
-    .compass-cardinal.west { left: 4px; top: 50%; transform: translateY(-50%); }
+    .compass-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--primary-color); }
+    .compass-cardinal { position: absolute; font-size: 0.625rem; font-weight: 700; color: var(--primary-color); }
+    .compass-cardinal.north { top: 3px; left: 50%; transform: translateX(-50%); }
+    .compass-cardinal.east { right: 3px; top: 50%; transform: translateY(-50%); }
+    .compass-cardinal.south { bottom: 3px; left: 50%; transform: translateX(-50%); }
+    .compass-cardinal.west { left: 3px; top: 50%; transform: translateY(-50%); }
 
     .compass-needle {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 4px;
-      height: 30px;
-      background: linear-gradient(to bottom, var(--error-color) 0%, var(--error-color) 50%, #999 50%, #999 100%);
-      transform-origin: center 14px;
-      transform: translate(-50%, -50%);
-      border-radius: 2px;
-      transition: transform 0.3s ease;
+      position: absolute; top: 50%; left: 50%;
+      width: 3px; height: 22px;
+      background: linear-gradient(to bottom, #ef4444 0%, #ef4444 50%, #999 50%, #999 100%);
+      transform-origin: center 10px; transform: translate(-50%, -50%);
+      border-radius: 2px; transition: transform 0.3s ease;
     }
 
     .compass-center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 8px;
-      height: 8px;
-      background: var(--text-color);
-      border-radius: var(--radius-full);
-      transform: translate(-50%, -50%);
+      position: absolute; top: 50%; left: 50%;
+      width: 6px; height: 6px; background: var(--text-color);
+      border-radius: 50%; transform: translate(-50%, -50%);
     }
 
-    .heading-display {
-      background: white;
-      padding: var(--space-sm) var(--space-md);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-md);
-      text-align: center;
-    }
+    .heading-display { background: white; padding: 0.25rem 0.75rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+    .heading-value { font-size: 1rem; font-weight: 700; color: var(--primary-color); }
+    .heading-label { font-size: 0.625rem; color: var(--text-secondary); text-transform: uppercase; }
 
-    .heading-value {
-      font-size: var(--font-size-xl);
-      font-weight: 700;
-      color: var(--primary-color);
+    /* Floating Controls - VERTICAL, Lower Position */
+    .floating-left, .floating-right {
+      position: fixed;
+      bottom: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 1000;
     }
-
-    .heading-label {
-      font-size: var(--font-size-xs);
-      color: var(--text-secondary);
-      text-transform: uppercase;
-    }
+    .floating-left { left: 0.5rem; }
+    .floating-right { right: 0.5rem; }
 
     /* Recenter Button */
     .recenter-btn {
-      position: fixed;
-      bottom: calc(80px + var(--space-xl));
-      right: var(--space-md);
-      width: 48px;
-      height: 48px;
-      background: white;
-      border-radius: var(--radius-full);
-      box-shadow: var(--shadow-lg);
-      border: none;
-      cursor: pointer;
-      z-index: var(--z-fixed);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--font-size-xl);
-      transition: all var(--transition-fast);
+      position: fixed; bottom: 80px; right: 0.5rem;
+      width: 48px; height: 48px; background: white;
+      border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      border: none; cursor: pointer; z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; transition: all 0.2s ease;
     }
-
-    .recenter-btn:hover {
-      transform: scale(1.1);
-      box-shadow: var(--shadow-xl);
-    }
+    .recenter-btn:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
     /* Recording Indicator */
     .recording-indicator {
-      position: fixed;
-      top: 70px;
-      left: var(--space-md);
-      background: var(--error-color);
-      color: white;
-      padding: var(--space-sm) var(--space-md);
-      border-radius: var(--radius-full);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      box-shadow: var(--shadow-lg);
-      z-index: var(--z-fixed);
+      position: fixed; top: 70px; left: 1rem;
+      background: #ef4444; color: white;
+      padding: 0.5rem 1rem; border-radius: 20px;
+      display: flex; align-items: center; gap: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15); z-index: 1000;
       animation: pulse 2s infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    .recording-dot {
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: var(--radius-full);
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    .recording-text {
-      font-weight: 700;
-      font-size: var(--font-size-xs);
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    .recording-dot { width: 8px; height: 8px; background: white; border-radius: 50%; animation: blink 1s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .recording-text { font-weight: 700; font-size: 0.75rem; }
 
     /* Bottom Navigation */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-around;
-      padding: var(--space-sm);
-      z-index: var(--z-fixed);
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: white; border-top: 1px solid var(--border-color);
+      display: flex; justify-content: space-around;
+      padding: 0.5rem; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     }
 
     .nav-button {
-      background: none;
-      border: none;
-      padding: var(--space-sm) var(--space-md);
-      cursor: pointer;
-      color: var(--text-secondary);
-      font-size: var(--font-size-sm);
-      border-radius: var(--radius-md);
-      transition: all var(--transition-fast);
-      white-space: nowrap;
+      background: none; border: none;
+      padding: 0.5rem 1rem; cursor: pointer;
+      color: var(--text-secondary); font-size: 0.875rem;
+      border-radius: 8px; transition: all 0.2s ease; white-space: nowrap;
     }
+    .nav-button:hover { background: var(--bg-secondary); color: var(--primary-color); }
 
-    .nav-button:hover {
-      background: var(--bg-secondary);
-      color: var(--primary-color);
-    }
-
-    /* Bottom Popups - CRITICAL Z-INDEX */
+    /* Bottom Popups */
     .bottom-popup {
-      position: fixed;
-      bottom: 60px;
-      left: 0;
-      right: 0;
-      background: white;
-      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-      box-shadow: var(--shadow-xl);
-      padding: var(--space-xl);
-      max-height: 60vh;
-      overflow-y: auto;
-      z-index: var(--z-modal); /* Higher than nav! */
-      transform: translateY(100%);
-      transition: transform var(--transition-base);
+      position: fixed; bottom: 60px; left: 0; right: 0;
+      background: white; border-radius: 16px 16px 0 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      padding: 1.5rem; max-height: 60vh; overflow-y: auto; z-index: 2000;
+      transform: translateY(100%); transition: transform 0.3s ease;
     }
+    .bottom-popup:not(.hidden) { transform: translateY(0); }
+    .bottom-popup h3 { margin: 0 0 1rem 0; font-size: 1.25rem; }
+    .bottom-popup .btn { width: 100%; margin-bottom: 0.5rem; }
 
-    .bottom-popup:not(.hidden) {
-      transform: translateY(0);
-    }
-
-    .bottom-popup h3 {
-      margin-bottom: var(--space-lg);
-      color: var(--text-color);
-    }
-
-    .bottom-popup .btn {
-      width: 100%;
-      margin-bottom: var(--space-sm);
-    }
-
-    /* Accessibility Overlay - CRITICAL Z-INDEX */
+    /* Overlays/Modals */
     .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: var(--z-modal); /* Higher than nav! */
-      padding: var(--space-md);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 99999; padding: 1rem;
     }
-
-    .overlay.hidden {
-      display: none;
-    }
+    .overlay.hidden { display: none; }
 
     .modal-container {
-      background: white;
-      border-radius: var(--radius-xl);
-      max-width: 600px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: var(--space-xl);
+      background: white; border-radius: 16px;
+      max-width: 600px; width: 100%; max-height: 90vh;
+      overflow-y: auto; padding: 1.5rem;
     }
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
-      body {
-        overflow: visible;
-        overflow-x: hidden;
-      }
+      .top-bar { max-width: calc(100% - 1rem); padding: 0.375rem 0.5rem; gap: 0.25rem; }
+      .top-bar .btn { padding: 0.375rem 0.5rem; font-size: 0.75rem; min-width: auto; }
+      .stat-display { font-size: 0.75rem; }
 
-      /* Allow menu to overlay */
-      body.menu-open {
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-      }
+      .compass-container { top: 115px; }
+      .compass-display { width: 50px; height: 50px; }
+      .heading-value { font-size: 0.875rem; }
 
-      /* Lower map z-index when menu open */
-      body.menu-open .map-container {
-        pointer-events: none;
-      }
+      .floating-left, .floating-right { bottom: 120px; }
+      .recenter-btn { bottom: 70px; }
 
+      body.menu-open .map-container,
       body.menu-open .top-bar,
+      body.menu-open .compass-container,
       body.menu-open .floating-left,
       body.menu-open .floating-right,
-      body.menu-open .compass-container,
-      body.menu-open .bottom-nav {
-        pointer-events: none;
-      }
+      body.menu-open .bottom-nav,
+      body.menu-open .recenter-btn { pointer-events: none; }
 
-      .top-bar {
-        top: 70px;
-        flex-wrap: wrap;
-        max-width: calc(100% - 2rem);
+      .menu-toggle { display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 100000 !important; }
+      .nav-menu {
+        position: fixed !important;
+        top: 64px !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+        background: white !important; z-index: 99999 !important;
+        flex-direction: column !important; padding: 1rem !important;
+        transform: translateX(100%) !important; opacity: 0 !important;
+        transition: all 0.3s ease !important; pointer-events: none !important; overflow-y: auto !important;
       }
+      .nav-menu.active { transform: translateX(0) !important; opacity: 1 !important; pointer-events: auto !important; }
+      .nav-menu .nav-link { display: flex !important; padding: 1rem !important; color: #1a1a1a !important; }
+    }
 
-      .floating-left,
-      .floating-right {
-        top: 120px;
-      }
-
-      .compass-container {
-        display: none; /* Hide on mobile to save space */
-      }
-
-      .bottom-nav {
-        overflow-x: auto;
-      }
+    @media (max-width: 400px) {
+      .top-bar .btn { padding: 0.5rem; }
+      .separator { display: none; }
     }
   </style>
 </head>
@@ -385,71 +214,30 @@
 
   <!-- Navigation -->
   <nav class="top-nav" role="navigation">
-    <a href="index.html" class="nav-brand">
-      <span class="nav-brand-icon">🌲</span>
-      <span>Access Nature</span>
-    </a>
-    
-    <button class="menu-toggle" 
-            aria-label="Toggle navigation menu"
-            aria-expanded="false"
-            id="menuToggle">
-      <span class="hamburger-icon">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
+    <a href="index.html" class="nav-brand"><span class="nav-brand-icon">🌲</span><span>Access Nature</span></a>
+    <button class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" id="menuToggle">
+      <span class="hamburger-icon"><span></span><span></span><span></span></span>
     </button>
-    
     <div class="nav-menu" id="navMenu">
-      <a href="index.html" class="nav-link">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-      </a>
-      <a href="tracker.html" class="nav-link active">
-        <span class="nav-icon">🗺️</span>
-        <span class="nav-label">Track Trail</span>
-      </a>
-      <a href="reports.html" class="nav-link">
-        <span class="nav-icon">⚠️</span>
-        <span class="nav-label">Reports</span>
-      </a>
-      <a href="routes.html" class="nav-link">
-        <span class="nav-icon">📂</span>
-        <span class="nav-label">My Routes</span>
-      </a>
-      <a href="accessibility.html" class="nav-link">
-        <span class="nav-icon">♿</span>
-        <span class="nav-label">Survey</span>
-      </a>
-      <a href="profile.html" class="nav-link">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Profile</span>
-      </a>
-      
-      <div class="nav-auth">
-        <button id="authBtn" class="btn btn-primary">Sign In</button>
-      </div>
+      <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+      <a href="tracker.html" class="nav-link active"><span class="nav-icon">🗺️</span><span class="nav-label">Track Trail</span></a>
+      <a href="reports.html" class="nav-link"><span class="nav-icon">📋</span><span class="nav-label">Reports</span></a>
+      <a href="routes.html" class="nav-link"><span class="nav-icon">📂</span><span class="nav-label">My Routes</span></a>
+      <a href="profile.html" class="nav-link"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+      <div class="nav-auth"><button id="authBtn" class="btn btn-primary">Sign In</button></div>
     </div>
   </nav>
 
-  <!-- Auth Status Bar (hidden, for backward compatibility) -->
+  <!-- Hidden Auth Status (backward compat) -->
   <div id="authStatusBar" class="auth-status-bar" style="display: none;">
-    <div id="userInfo" class="user-info hidden">
-      <span class="user-greeting">Welcome, <span id="userEmail"></span>!</span>
-      <button id="logoutBtn" class="auth-btn logout-btn">Logout</button>
-    </div>
-    <div id="authPrompt" class="auth-prompt">
-      <button id="showAuthBtn" class="auth-btn login-btn">Sign In</button>
-    </div>
+    <div id="userInfo" class="user-info hidden"><span class="user-greeting">Welcome, <span id="userEmail"></span>!</span><button id="logoutBtn" class="auth-btn logout-btn">Logout</button></div>
+    <div id="authPrompt" class="auth-prompt"><button id="showAuthBtn" class="auth-btn login-btn">Sign In</button></div>
   </div>
 
-  <!-- Map Container -->
-  <div id="map-container" class="map-container">
-    <div id="map"></div>
-  </div>
+  <!-- Map -->
+  <div id="map-container" class="map-container"><div id="map"></div></div>
 
-  <!-- Enhanced Compass with Heading Display -->
+  <!-- Compass -->
   <div id="compass-container" class="compass-container">
     <div id="compass" class="compass-display">
       <div class="compass-ring">
@@ -461,56 +249,50 @@
       <div id="compass-needle" class="compass-needle"></div>
       <div class="compass-center"></div>
     </div>
-    
     <div id="heading-display" class="heading-display">
       <div class="heading-value" id="heading-value">0°</div>
       <div class="heading-label">Heading</div>
     </div>
   </div>
 
-  <!-- Recenter Button -->
-  <button id="recenterBtn" class="recenter-btn" title="Center on my location" aria-label="Center on location">
-    📍
-  </button>
+  <button id="recenterBtn" class="recenter-btn" title="Center on my location">📍</button>
 
-  <!-- Recording Indicator -->
   <div id="recording-indicator" class="recording-indicator hidden">
-    <span class="recording-dot"></span>
-    <span class="recording-text">RECORDING</span>
+    <span class="recording-dot"></span><span class="recording-text">RECORDING</span>
   </div>
 
   <!-- Top Control Bar -->
   <div class="top-bar">
-    <button id="startBtn" class="btn btn-success" title="Start tracking" aria-label="Start tracking">▶ Start</button>
-    <button id="pauseBtn" class="btn btn-warning" title="Pause tracking" aria-label="Pause tracking">⏸ Pause</button>
-    <button id="stopBtn" class="btn btn-danger" title="Stop tracking and Save" aria-label="Stop tracking">⏹ Stop</button>
-    <span id="timer" class="stat-display" title="Timer" aria-label="Timer">00:00:00</span>
+    <button id="startBtn" class="btn btn-success" title="Start tracking">▶ Start</button>
+    <button id="pauseBtn" class="btn btn-warning" title="Pause tracking">⏸ Pause</button>
+    <button id="stopBtn" class="btn btn-danger" title="Stop and Save">⏹ Stop</button>
+    <span id="timer" class="stat-display">00:00:00</span>
     <span class="separator">|</span>
-    <span id="distance" class="stat-display" title="Distance" aria-label="Distance">0.00 km</span>
+    <span id="distance" class="stat-display">0.00 km</span>
   </div>
 
-  <!-- Left Controls -->
+  <!-- Left Controls (Vertical) -->
   <div class="floating-left">
-    <button id="toggleBtn" class="btn btn-icon btn-primary" title="Toggle map rotation" aria-label="Toggle map rotation">🧭</button>
-    <button class="btn btn-icon btn-primary" onclick="openAccessibilityForm()" title="Accessibility form" aria-label="Open accessibility form">♿</button>
+    <button id="toggleBtn" class="btn btn-icon btn-primary" title="Toggle map rotation">🧭</button>
+    <button id="accessibilityBtn" class="btn btn-icon btn-primary" title="Accessibility form">♿</button>
   </div>
 
-  <!-- Right Media Panel -->
+  <!-- Right Controls (Vertical) -->
   <div class="floating-right media-panel" id="mediaPanel">
-    <button id="takePhotoBtn" class="btn btn-icon btn-primary" aria-label="Take photo" title="Take Photo">📷</button>
-    <button class="btn btn-icon btn-primary" onclick="addTextNote()" aria-label="Add note" title="Add Note">📝</button>
-    <button class="btn btn-icon btn-primary" onclick="showRouteDataOnMap()" aria-label="Show Route Data" title="Show Route Data">🗺</button>
+    <button id="takePhotoBtn" class="btn btn-icon btn-primary" title="Take Photo">📷</button>
+    <button id="addNoteBtn" class="btn btn-icon btn-primary" title="Add Note">📝</button>
+    <button id="showRouteDataBtn" class="btn btn-icon btn-primary" title="Show Route Data">🗺</button>
   </div>
 
   <!-- Bottom Navigation -->
   <div id="bottomNav" class="bottom-nav">
-    <button class="nav-button" onclick="togglePanel('exportPanel')">📤 Export</button>
-    <button class="nav-button" onclick="togglePanel('summaryPanel')">📂 Routes</button>
-    <button class="nav-button" onclick="togglePanel('trailGuidePanel')">🌐 Guides</button>
-    <button class="nav-button" onclick="togglePanel('devToolsPanel')">🛠️ Tools</button>
+    <button class="nav-button" data-panel="exportPanel">📤 Export</button>
+    <button class="nav-button" data-panel="summaryPanel">📂 Routes</button>
+    <button class="nav-button" data-panel="trailGuidePanel">🌐 Guides</button>
+    <button class="nav-button" data-panel="devToolsPanel">🛠️ Tools</button>
   </div>
 
-  <!-- Export Panel -->
+  <!-- Panels -->
   <div id="exportPanel" class="bottom-popup hidden">
     <h3>📤 Export Options</h3>
     <button id="prepareAndExportBtn" class="btn btn-primary">📦 Export Route</button>
@@ -520,7 +302,6 @@
     <button id="saveToCloudBtn" class="btn btn-success">☁️ Save to Cloud</button>
   </div>
 
-  <!-- Summary Panel -->
   <div id="summaryPanel" class="bottom-popup hidden">
     <h3>📂 My Routes</h3>
     <button id="loadCloudRoutesBtn" class="btn btn-primary">☁️ Load My Routes</button>
@@ -529,104 +310,191 @@
     <button id="clearAllAppDataBtn" class="btn btn-danger">🧹 Clear Everything</button>
   </div>
 
-  <!-- Trail Guide Panel -->
   <div id="trailGuidePanel" class="bottom-popup hidden">
     <h3>🌐 My Trail Guides</h3>
-    <div id="myGuidesList" class="guides-list">
-      <!-- Dynamically populated -->
-    </div>
+    <div id="myGuidesList" class="guides-list"></div>
   </div>
 
-  <!-- Dev Tools Panel -->
   <div id="devToolsPanel" class="bottom-popup hidden">
     <h3>🛠️ Developer Tools</h3>
-    <button onclick="showStorageMonitor()" class="btn btn-info">🧪 Storage Monitor</button>
-    <button onclick="triggerImport()" class="btn btn-info">📥 Import Route</button>
-    <button id="resetBtn" onclick="confirmAndResetApp()" class="btn btn-danger">🔄 Reset App</button>
+    <button id="storageMonitorBtn" class="btn btn-info">🧪 Storage Monitor</button>
+    <button id="importRouteBtn" class="btn btn-info">📥 Import Route</button>
+    <button id="resetAppBtn" class="btn btn-danger">🔄 Reset App</button>
   </div>
 
   <!-- Accessibility Form Modal -->
-  <div id="accessibilityOverlay" class="overlay hidden">
-    <div id="accessibilityFormContainer" class="modal-container">
-      <!-- Dynamically populated by your existing code -->
+  <div id="accessibilityOverlay" class="overlay hidden"><div id="accessibilityFormContainer" class="modal-container"></div></div>
+
+  <!-- Note Modal -->
+  <div id="noteModal" class="overlay hidden">
+    <div class="modal-container" style="max-width: 400px;">
+      <h3 style="margin: 0 0 1rem 0;">📝 Add Note</h3>
+      <textarea id="noteInput" placeholder="Enter your note..." style="width: 100%; min-height: 100px; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; resize: vertical; box-sizing: border-box;"></textarea>
+      <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+        <button id="saveNoteBtn" class="btn btn-success" style="flex: 1;">💾 Save Note</button>
+        <button id="cancelNoteBtn" class="btn btn-secondary">Cancel</button>
+      </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer" class="toast-container"></div>
-
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay hidden">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading...</div>
+  <!-- Save Modal -->
+  <div id="saveModal" class="overlay hidden">
+    <div class="modal-container" style="max-width: 400px; text-align: center;">
+      <h3 style="margin: 0 0 1rem 0;">💾 Save Your Route</h3>
+      <p style="color: #666; margin-bottom: 1.5rem;">Where would you like to save your tracked route?</p>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button id="saveLocalBtn" class="btn btn-primary">📱 Save Locally</button>
+        <button id="saveCloudBtn" class="btn btn-success">☁️ Save to Cloud</button>
+        <button id="saveBothBtn" class="btn btn-info">💾 Save Both</button>
+        <button id="saveCancelBtn" class="btn btn-secondary" style="margin-top: 0.5rem;">❌ Cancel</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Hidden File Inputs -->
+  <!-- Toast & Loading -->
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="loadingOverlay" class="loading-overlay hidden"><div class="spinner"></div><div class="loading-text">Loading...</div></div>
+
+  <!-- Hidden Inputs -->
   <input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
   <input type="file" id="importFile" accept=".json,.gpx" class="hidden">
 
-  <!-- External Libraries -->
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-  <!-- Firebase Setup -->
   <script type="module" src="src/firebase-setup.js"></script>
-
-  <!-- Universal Navigation & Auth -->
   <script src="universal-navigation.js"></script>
   <script src="auth-status-handler.js"></script>
-
-  <!-- Load UI helpers -->
   <script src="./src/js/navigation.js"></script>
   <script src="./src/js/toast.js"></script>
   <script src="./src/js/loading.js"></script>
   <script src="./src/js/modal.js"></script>
-  
+
   <script type="module">
     import toast from './src/helpers/toasts.js';
     import modal from './src/helpers/modals.js';
     import { showLoading, hideLoading } from './src/helpers/loading.js';
-    
-    // Make globally available
-    window.toast = toast;
-    window.modal = modal;
-    window.showLoading = showLoading;
-    window.hideLoading = hideLoading;
-    
-    console.log('✅ UI systems loaded');
+    window.toast = toast; window.modal = modal; window.showLoading = showLoading; window.hideLoading = hideLoading;
   </script>
 
-  <!-- Panel Toggle Helper -->
+  <!-- Page Functionality -->
   <script>
-    function togglePanel(panelId) {
-      // Close all panels first
-      document.querySelectorAll('.bottom-popup').forEach(panel => {
-        if (panel.id !== panelId) {
-          panel.classList.add('hidden');
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🗺️ Tracker page initializing...');
+
+      const noteModal = document.getElementById('noteModal');
+      const noteInput = document.getElementById('noteInput');
+      const saveModal = document.getElementById('saveModal');
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+
+      // Panel Toggle
+      function togglePanel(panelId) {
+        document.querySelectorAll('.bottom-popup').forEach(p => { if (p.id !== panelId) p.classList.add('hidden'); });
+        document.getElementById(panelId)?.classList.toggle('hidden');
+      }
+      window.togglePanel = togglePanel;
+
+      document.querySelectorAll('.nav-button[data-panel]').forEach(btn => btn.addEventListener('click', () => togglePanel(btn.dataset.panel)));
+      document.querySelectorAll('.bottom-popup .btn').forEach(btn => btn.addEventListener('click', () => setTimeout(() => document.querySelectorAll('.bottom-popup').forEach(p => p.classList.add('hidden')), 100)));
+      document.addEventListener('click', (e) => { if (!e.target.closest('.bottom-nav') && !e.target.closest('.bottom-popup')) document.querySelectorAll('.bottom-popup').forEach(p => p.classList.add('hidden')); });
+
+      // Recenter
+      document.getElementById('recenterBtn')?.addEventListener('click', () => {
+        if (typeof window.recenterMap === 'function') window.recenterMap();
+        else if (window.map && navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => { window.map.setView([pos.coords.latitude, pos.coords.longitude], 16); window.toast?.success('Centered to your location'); },
+            () => window.toast?.error('Could not get location')
+          );
         }
       });
-      
-      // Toggle target panel
-      const panel = document.getElementById(panelId);
-      if (panel) {
-        panel.classList.toggle('hidden');
-      }
-    }
 
-    // Close panels when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.bottom-nav') && !e.target.closest('.bottom-popup')) {
-        document.querySelectorAll('.bottom-popup').forEach(panel => {
-          panel.classList.add('hidden');
+      // Note Modal
+      function openNoteModal() { document.activeElement?.blur(); noteModal.classList.remove('hidden'); setTimeout(() => noteInput?.focus(), 100); }
+      function closeNoteModal() { noteModal.classList.add('hidden'); if (noteInput) noteInput.value = ''; }
+      function saveNote() {
+        const note = noteInput?.value.trim();
+        if (note) {
+          if (window.TrackingController?.addNote) window.TrackingController.addNote(note);
+          else if (window.currentSession?.notes) window.currentSession.notes.push({ text: note, timestamp: new Date().toISOString(), location: window.currentPosition || null });
+          window.toast?.success('Note added!');
+        }
+        closeNoteModal();
+      }
+
+      document.getElementById('addNoteBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (typeof window.addTextNote === 'function') { document.activeElement?.blur(); setTimeout(() => window.addTextNote(), 50); }
+        else openNoteModal();
+      });
+      document.getElementById('saveNoteBtn')?.addEventListener('click', saveNote);
+      document.getElementById('cancelNoteBtn')?.addEventListener('click', closeNoteModal);
+      noteModal?.addEventListener('click', (e) => { if (e.target === noteModal) closeNoteModal(); });
+
+      // Save Modal (Stop Button)
+      function openSaveModal() { saveModal.classList.remove('hidden'); }
+      function closeSaveModal() { saveModal.classList.add('hidden'); }
+      function performStop() { window.TrackingController?.stopTracking?.(); }
+      function saveLocally() { window.StorageController?.saveRoute?.() || window.saveRouteLocally?.(); window.toast?.success('Route saved locally!'); }
+      function saveToCloud() { window.CloudController?.saveRoute?.() || window.saveRouteToCloud?.() || document.getElementById('saveToCloudBtn')?.click(); window.toast?.success('Route saved to cloud!'); }
+
+      document.getElementById('stopBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const hasData = window.TrackingController?.hasActiveRoute?.() || window.TrackingController?.currentRoute?.points?.length > 0 || window.currentSession?.points?.length > 0;
+        if (hasData) openSaveModal();
+        else { performStop(); window.toast?.info('Tracking stopped (no data to save)'); }
+      });
+
+      document.getElementById('saveLocalBtn')?.addEventListener('click', () => { performStop(); saveLocally(); closeSaveModal(); });
+      document.getElementById('saveCloudBtn')?.addEventListener('click', () => { performStop(); saveToCloud(); closeSaveModal(); });
+      document.getElementById('saveBothBtn')?.addEventListener('click', () => { performStop(); saveLocally(); saveToCloud(); closeSaveModal(); });
+      document.getElementById('saveCancelBtn')?.addEventListener('click', closeSaveModal);
+      saveModal?.addEventListener('click', (e) => { if (e.target === saveModal) closeSaveModal(); });
+
+      // Other Buttons
+      document.getElementById('accessibilityBtn')?.addEventListener('click', () => window.openAccessibilityForm?.());
+      document.getElementById('showRouteDataBtn')?.addEventListener('click', () => window.showRouteDataOnMap?.());
+      document.getElementById('storageMonitorBtn')?.addEventListener('click', () => window.showStorageMonitor?.());
+      document.getElementById('importRouteBtn')?.addEventListener('click', () => window.triggerImport?.() || document.getElementById('importFile')?.click());
+      document.getElementById('resetAppBtn')?.addEventListener('click', () => window.confirmAndResetApp?.());
+
+      // Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (!noteModal.classList.contains('hidden')) closeNoteModal();
+          else if (!saveModal.classList.contains('hidden')) closeSaveModal();
+          else document.querySelectorAll('.bottom-popup').forEach(p => p.classList.add('hidden'));
+        }
+      });
+
+      // Hamburger
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+          menuToggle.classList.toggle('active');
+          navMenu.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+        });
+
+        navMenu.querySelectorAll('a.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('menu-open');
+          });
         });
       }
+
+      console.log('✅ Tracker page initialized');
     });
   </script>
 
-  <!-- Your App JavaScript - Keep all your existing functionality! -->
   <script type="module" src="src/main.js"></script>
   <script type="module" src="src/features/auth.js"></script>
-
 </body>
 </html>
