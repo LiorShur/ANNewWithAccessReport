@@ -1,5 +1,5 @@
 // Landing page controller
-import { auth, db } from '../firebase-setup.js';
+import { auth, db } from './firebase-setup.js';
 import { initializeAccessReport } from './controllers/access-report-main.js';
 
 class LandingPageController {
@@ -549,7 +549,7 @@ async updateUserStats() {
 async loadUserCloudStats() {
   try {
     const { collection, query, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js");
-    const { auth } = await import('../firebase-setup.js');
+    const { auth } = await import('./firebase-setup.js');
     
     // Get user's routes from Firebase
     const routesQuery = query(
@@ -883,7 +883,7 @@ async viewTrailGuide(guideId) {
     const guideData = guideSnap.data();
     
     // Check if it's public or user owns it
-    const { auth } = await import('../firebase-setup.js');
+    const { auth } = await import('./firebase-setup.js');
     const currentUser = auth.currentUser;
     
     const canView = guideData.isPublic || (currentUser && currentUser.uid === guideData.userId);
@@ -977,7 +977,7 @@ downloadTrailGuide(htmlContent, routeName) {
 // UPDATED: Check authentication status for landing page
 async checkLandingAuth() {
   try {
-    const { auth } = await import('../firebase-setup.js');
+    const { auth } = await import('./firebase-setup.js');
     return {
       isSignedIn: !!auth.currentUser,
       user: auth.currentUser,
@@ -1037,7 +1037,7 @@ async loadMyTrailGuides() {
 
     // Import Firestore functions
     const { collection, query, where, orderBy, getDocs } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js");
-    const { db, auth } = await import('../firebase-setup.js');
+    const { db, auth } = await import('./firebase-setup.js');
     
     // Query user's trail guides
     const guidesQuery = query(
@@ -1187,7 +1187,7 @@ setupModalEventListeners() {
     try {
       // Import Firebase auth
       const { onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js");
-      const { auth } = await import('../firebase-setup.js');
+      const { auth } = await import('./firebase-setup.js');
       
       onAuthStateChanged(auth, (user) => {
         this.currentUser = user;
@@ -1277,7 +1277,7 @@ async handleLogin(event) {
     this.setButtonLoading(loginBtn, true);
     
     const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js");
-    const { auth } = await import('../firebase-setup.js');
+    const { auth } = await import('./firebase-setup.js');
     
     const userCredential = await signInWithEmailAndPassword(
       auth, 
@@ -1320,7 +1320,7 @@ async handleSignup(event) {
     
     const { createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js");
     const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js");
-    const { auth, db } = await import('../firebase-setup.js');
+    const { auth, db } = await import('./firebase-setup.js');
     
     const userCredential = await createUserWithEmailAndPassword(
       auth, 
@@ -1356,7 +1356,7 @@ async handleGoogleAuth() {
   try {
     const { GoogleAuthProvider, signInWithPopup } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js");
     const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js");
-    const { auth, db } = await import('../firebase-setup.js');
+    const { auth, db } = await import('./firebase-setup.js');
     
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);

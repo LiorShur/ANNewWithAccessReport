@@ -3,7 +3,7 @@
  * Handles geographic filtering, map controls, clustering, and timeline
  */
 
-import { auth, db } from './firebase-setup.js';
+import { auth, db } from './src/firebase-setup.js';
 import { accessReportController } from './src/controllers/access-report-controller.js';
 import { 
   initializeReportsPageIntegration, 

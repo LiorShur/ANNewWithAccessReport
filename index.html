@@ -12,97 +12,356 @@
   <!-- External CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
   
-  <!-- 1. Design System FIRST! -->
-  <link rel="stylesheet" href="src/css/design-system.css">
-
-  <!-- 2. Component Systems -->
-  <link rel="stylesheet" href="src/css/buttons.css">
-  <link rel="stylesheet" href="src/css/toasts.css">
-  <link rel="stylesheet" href="src/css/modals.css">
-  <link rel="stylesheet" href="src/css/loading-states.css">
-  <link rel="stylesheet" href="src/css/focus-states.css">
-
-  <!-- 3. Base & Layout -->
-  <link rel="stylesheet" href="src/css/base.css">
-  <link rel="stylesheet" href="src/css/landing.css">
-
-  <!-- 4. Page-Specific -->
-  <link rel="stylesheet" href="src/css/components.css">
-  <link rel="stylesheet" href="src/css/auth.css">
-  <link rel="stylesheet" href="src/css/ui-polish.css">
-  <link rel="stylesheet" href="src/css/themes.css">
-  <link rel="stylesheet" href="src/css/access-report-styles.css">
+  <!-- NEW DESIGN SYSTEM -->
+  <link rel="stylesheet" href="access-nature-design-system.css">
   
-  <!-- Emergency scroll fix -->
+  <!-- Page-Specific Styles -->
   <style>
-    html, body {
-      height: auto !important;
-      min-height: 100vh !important;
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-    }
-    
+    /* Keep your original landing page styles */
     body {
-      margin: 0;
-      padding-top: 60px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-top: 64px;
     }
-    
-    .hero-section,
-    .main-navigation,
-    .community-section,
-    .featured-section,
+
+    /* Hero Section */
+    .hero-section {
+      padding: var(--space-3xl) var(--space-xl);
+      text-align: center;
+      color: white;
+    }
+
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-title {
+      font-size: var(--font-size-5xl);
+      font-weight: 700;
+      margin-bottom: var(--space-lg);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .hero-subtitle {
+      font-size: var(--font-size-xl);
+      opacity: 0.95;
+      margin-bottom: var(--space-2xl);
+    }
+
+    /* Auth status in hero */
+    .auth-status-landing {
+      margin-top: var(--space-2xl);
+      display: flex;
+      justify-content: center;
+      gap: var(--space-md);
+    }
+
+    /* Main Navigation Cards */
+    .main-navigation {
+      background: white;
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      padding: var(--space-3xl) var(--space-xl);
+    }
+
+    .nav-container {
+      max-width: var(--max-width-xl);
+      margin: 0 auto;
+      display: grid;
+      gap: var(--space-2xl);
+    }
+
+    .nav-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: var(--space-2xl);
+      box-shadow: var(--shadow-lg);
+      transition: all var(--transition-base);
+      cursor: pointer;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .nav-card-icon {
+      font-size: 3rem;
+      margin-bottom: var(--space-lg);
+    }
+
+    .nav-card h2, .nav-card h3 {
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--space-md);
+      color: var(--text-color);
+    }
+
+    .nav-card p, .nav-card-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: var(--space-lg);
+    }
+
+    .nav-card-features, .nav-card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+
+    .feature-tag, .nav-card-badge {
+      display: inline-block;
+      background: var(--bg-secondary);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Quick Search */
+    .quick-search {
+      display: flex;
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+
+    .quick-search input {
+      flex: 1;
+    }
+
+    /* Tracker Stats */
+    .tracker-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: var(--space-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+    }
+
+    .stat-number {
+      display: block;
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: var(--space-xs);
+    }
+
+    .stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Community Section */
+    .community-section {
+      background: var(--bg-secondary);
+      padding: var(--space-3xl) var(--space-xl);
+    }
+
+    .community-container {
+      max-width: var(--max-width-xl);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .community-container h3 {
+      font-size: var(--font-size-3xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .community-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-xl);
+    }
+
+    .community-stat {
+      text-align: center;
+    }
+
+    .stat-big {
+      display: block;
+      font-size: var(--font-size-5xl);
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: var(--space-sm);
+    }
+
+    .stat-desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+    }
+
+    /* Featured Section */
+    .featured-section {
+      background: white;
+      padding: var(--space-3xl) var(--space-xl);
+    }
+
+    .featured-container {
+      max-width: var(--max-width-xl);
+      margin: 0 auto;
+    }
+
+    .featured-container h3 {
+      font-size: var(--font-size-3xl);
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .load-more-btn {
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Footer */
     .footer-section {
-      position: relative !important;
-      width: 100%;
+      background: var(--text-color);
+      color: white;
+      padding: var(--space-3xl) var(--space-xl);
+    }
+
+    .footer-container {
+      max-width: var(--max-width-xl);
+      margin: 0 auto;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-2xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .footer-brand h4 {
+      color: white;
+      margin-bottom: var(--space-md);
+    }
+
+    .footer-brand p {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: var(--space-xl);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: var(--font-size-4xl);
+      }
+
+      .hero-subtitle {
+        font-size: var(--font-size-lg);
+      }
+
+      .nav-card h2 {
+        font-size: var(--font-size-xl);
+      }
+
+      .community-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Mobile-First Top Navigation -->
-  <nav class="top-nav">
-    <!-- Brand/Logo -->
+  <!-- Navigation -->
+  <nav class="top-nav" role="navigation">
     <a href="index.html" class="nav-brand">
       <span class="nav-brand-icon">🌲</span>
       <span>Access Nature</span>
     </a>
-
-    <!-- Hamburger Menu Button -->
-    <button 
-      class="menu-toggle" 
-      id="menuToggle" 
-      aria-label="Toggle navigation menu"
-      aria-expanded="false"
-      aria-controls="navMenu"
-    >
-      <div class="hamburger-icon">
+    
+    <button class="menu-toggle" 
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            id="menuToggle">
+      <span class="hamburger-icon">
         <span></span>
         <span></span>
         <span></span>
-      </div>
+      </span>
     </button>
-
-    <!-- Navigation Menu -->
+    
     <div class="nav-menu" id="navMenu">
       <a href="index.html" class="nav-link active">
         <span class="nav-icon">🏠</span>
         <span class="nav-label">Home</span>
       </a>
-
       <a href="tracker.html" class="nav-link">
-        <span class="nav-icon">📍</span>
+        <span class="nav-icon">🗺️</span>
         <span class="nav-label">Track Trail</span>
       </a>
-
-      <a href="#" onclick="openTrailBrowser(); return false;" class="nav-link">
-        <span class="nav-icon">🔍</span>
-        <span class="nav-label">Browse Trails</span>
+      <a href="reports.html" class="nav-link">
+        <span class="nav-icon">⚠️</span>
+        <span class="nav-label">Reports</span>
       </a>
-
-      <button class="nav-link" id="authNavBtn" type="button">
+      <a href="routes.html" class="nav-link">
+        <span class="nav-icon">📂</span>
+        <span class="nav-label">My Routes</span>
+      </a>
+      <a href="accessibility.html" class="nav-link">
+        <span class="nav-icon">♿</span>
+        <span class="nav-label">Survey</span>
+      </a>
+      <a href="profile.html" class="nav-link">
         <span class="nav-icon">👤</span>
-        <span class="nav-label" id="authNavLabel">Sign In</span>
-      </button>
+        <span class="nav-label">Profile</span>
+      </a>
+      
+      <div class="nav-auth">
+        <button id="authBtn" class="btn btn-primary">Sign In</button>
+      </div>
     </div>
   </nav>
 
@@ -117,10 +376,10 @@
       <div id="authStatusBar" class="auth-status-landing">
         <div id="userInfo" class="user-info hidden">
           <span class="user-greeting">Welcome back, <span id="userEmail"></span>!</span>
-          <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+          <button id="logoutBtn" class="btn" style="background: white; color: var(--primary-color);">Logout</button>
         </div>
         <div id="authPrompt" class="auth-prompt">
-          <button id="showAuthBtn" class="btn btn-secondary">Sign In</button>
+          <button id="showAuthBtn" class="btn" style="background: white; color: var(--primary-color);">Sign In</button>
         </div>
       </div>
     </div>
@@ -130,20 +389,21 @@
   <div class="main-navigation">
     <div class="nav-container">
       
+      <!-- Accessibility Reports Card -->
       <div class="nav-card" onclick="window.location.href='reports.html'">
-  <div class="nav-card-icon">⚠️</div>
-  <h3 class="nav-card-title">Accessibility Reports</h3>
-  <p class="nav-card-description">
-    Report and view accessibility barriers in outdoor spaces and urban areas. 
-    Help build a more accessible world.
-  </p>
-  <div class="nav-card-footer">
-    <span class="nav-card-badge">🗺️ Interactive Map</span>
-    <span class="nav-card-badge">📊 Real-time Data</span>
-  </div>
-</div>
+        <div class="nav-card-icon">⚠️</div>
+        <h3 class="nav-card-title">Accessibility Reports</h3>
+        <p class="nav-card-description">
+          Report and view accessibility barriers in outdoor spaces and urban areas. 
+          Help build a more accessible world.
+        </p>
+        <div class="nav-card-footer">
+          <span class="nav-card-badge">🗺️ Interactive Map</span>
+          <span class="nav-card-badge">📊 Real-time Data</span>
+        </div>
+      </div>
 
-      <!-- Search Trail Guides -->
+      <!-- Discover Trails Card -->
       <div class="nav-card discover-card">
         <div class="nav-card-icon">🔍</div>
         <h2>Discover Accessible Trails</h2>
@@ -166,7 +426,7 @@
         </div>
       </div>
 
-      <!-- Track New Trail -->
+      <!-- Track New Trail Card -->
       <div class="nav-card track-card">
         <div class="nav-card-icon">📍</div>
         <h2>Map a New Trail</h2>
@@ -249,162 +509,61 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2024 Access Nature. Making trails accessible for all.</p>
+        <p>© 2024 Access Nature. Making nature accessible for everyone.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Complete Trail Browser Modal -->
-  <div id="trailBrowserModal" class="trail-browser-modal hidden">
-    <div class="modal-backdrop" onclick="closeTrailBrowser()"></div>
-    <div class="trail-browser-container">
-      <div class="trail-browser-header">
-        <h2>🔍 Browse Accessible Trails</h2>
-        <button class="modal-close-btn" onclick="closeTrailBrowser()">✕</button>
+  <!-- Trail Browser Modal (from your original code) -->
+  <div id="trailBrowserModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">🔍 Browse Trail Guides</h2>
+        <button class="modal-close" onclick="closeTrailBrowser()">×</button>
       </div>
-      
-      <div class="trail-browser-search">
-        <input 
-          type="text" 
-          id="trailSearch" 
-          placeholder="Search trails by name, location, or features..." 
-          class="form-input"
-          onkeypress="if(event.key==='Enter') searchTrails()"
-        >
-        <button onclick="searchTrails()" class="btn btn-primary">🔍 Search</button>
-      </div>
-
-      <div class="trail-browser-filters">
-        <h3>Filters</h3>
-        <div class="filter-group">
-          <label>
-            <input type="checkbox" id="filterWheelchair" onchange="applyFilters()">
-            ♿ Wheelchair Accessible
-          </label>
-          <label>
-            <input type="checkbox" id="filterPaved" onchange="applyFilters()">
-            🛤️ Paved Surface
-          </label>
-          <label>
-            <input type="checkbox" id="filterPhotos" onchange="applyFilters()">
-            📷 Has Photos
-          </label>
+      <div class="modal-body">
+        <!-- Search and Filters -->
+        <div class="form-group">
+          <input type="text" id="trailSearch" class="form-input" placeholder="Search trails...">
         </div>
-      </div>
-
-      <div class="trail-browser-results">
-        <div class="results-header">
-          <span id="resultsCount">0 trails found</span>
-          <button onclick="loadMoreResults()" class="btn btn-secondary btn-sm" id="loadMoreBtn">Load More</button>
+        
+        <div class="grid grid-cols-3" style="margin-bottom: var(--space-lg);">
+          <div class="form-group">
+            <select id="filterAccessibility" class="form-select">
+              <option value="">All Accessibility</option>
+              <option value="wheelchair">Wheelchair</option>
+              <option value="limited">Limited Mobility</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select id="filterDifficulty" class="form-select">
+              <option value="">All Difficulty</option>
+              <option value="easy">Easy</option>
+              <option value="moderate">Moderate</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <button onclick="applyFilters()" class="btn btn-primary" style="width: 100%;">Apply Filters</button>
+          </div>
         </div>
-        <div id="trailResults" class="trail-results-grid">
+        
+        <!-- Results -->
+        <div id="trailResults" class="grid grid-cols-2" style="gap: var(--space-md); max-height: 50vh; overflow-y: auto;">
           <!-- Dynamically populated -->
         </div>
+        
+        <button onclick="loadMoreResults()" class="btn btn-secondary" style="width: 100%; margin-top: var(--space-md);">Load More</button>
       </div>
     </div>
   </div>
 
-  <!-- Auth Modal -->
-  <div id="authModal" class="auth-modal hidden">
-    <div class="auth-modal-backdrop" onclick="closeAuthModal()"></div>
-    <div class="auth-modal-container">
-      <div class="auth-modal-header">
-        <h2>Welcome to Access Nature</h2>
-        <button class="auth-modal-close" onclick="closeAuthModal()">✕</button>
-      </div>
-      
-      <div class="auth-modal-content">
-        <!-- Login Form -->
-        <div id="loginForm" class="auth-form active">
-          <div class="auth-form-header">
-            <h3>Sign In to Your Account</h3>
-            <p>Continue your accessibility mapping journey</p>
-          </div>
-          
-          <form class="auth-inputs">
-            <div class="input-group">
-              <input type="email" id="loginEmail" placeholder="Email address" required>
-              <span class="input-icon">📧</span>
-            </div>
-            
-            <div class="input-group">
-              <input type="password" id="loginPassword" placeholder="Password" required>
-              <span class="input-icon">🔒</span>
-            </div>
-            
-            <button type="submit" id="loginBtn" class="auth-submit-btn">
-              <span class="btn-text">Sign In</span>
-            </button>
-          </form>
-          
-          <div class="auth-divider">
-            <span>or</span>
-          </div>
-          
-          <button id="googleLoginBtn" class="google-btn">
-            <span>Continue with Google</span>
-          </button>
-          
-          <div class="auth-switch">
-            <p>Don't have an account? <button type="button" onclick="switchToSignup()" class="switch-btn">Sign up</button></p>
-          </div>
-        </div>
+  <!-- Firebase Setup -->
+  <script type="module" src="src/firebase-setup.js"></script>
 
-        <!-- Signup Form -->
-        <div id="signupForm" class="auth-form">
-          <div class="auth-form-header">
-            <h3>Create Your Account</h3>
-            <p>Join the community making nature accessible</p>
-          </div>
-          
-          <form class="auth-inputs">
-            <div class="input-group">
-              <input type="text" id="signupName" placeholder="Full name" required>
-              <span class="input-icon">👤</span>
-            </div>
-            
-            <div class="input-group">
-              <input type="email" id="signupEmail" placeholder="Email address" required>
-              <span class="input-icon">📧</span>
-            </div>
-            
-            <div class="input-group">
-              <input type="password" id="signupPassword" placeholder="Create password" required>
-              <span class="input-icon">🔒</span>
-            </div>
-            
-            <button type="submit" id="signupBtn" class="auth-submit-btn">
-              <span class="btn-text">Create Account</span>
-            </button>
-          </form>
-          
-          <div class="auth-divider">
-            <span>or</span>
-          </div>
-          
-          <button id="googleSignupBtn" class="google-btn">
-            <span>Continue with Google</span>
-          </button>
-          
-          <div class="auth-switch">
-            <p>Already have an account? <button type="button" onclick="switchToLogin()" class="switch-btn">Sign in</button></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Container -->
-  <div id="toastContainer" class="toast-container"></div>
-
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay hidden">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Loading...</div>
-  </div>
-
-  <!-- External Libraries -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Universal Navigation & Auth -->
+  <script src="universal-navigation.js"></script>
+  <script src="auth-status-handler.js"></script>
 
   <!-- Load UI helpers as modules -->
   <script type="module">
@@ -425,72 +584,8 @@
   <script type="module" src="src/landing.js"></script>
   <script type="module" src="src/features/auth.js"></script>
 
-  <!-- Navigation and Helper Scripts -->
+  <!-- Navigation functions -->
   <script>
-    // Mobile menu toggle
-    document.addEventListener('DOMContentLoaded', () => {
-      const menuToggle = document.getElementById('menuToggle');
-      const navMenu = document.getElementById('navMenu');
-      
-      if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', () => {
-          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-          
-          menuToggle.setAttribute('aria-expanded', !isExpanded);
-          menuToggle.classList.toggle('active');
-          navMenu.classList.toggle('active');
-          document.body.classList.toggle('menu-open');
-        });
-        
-        // Close menu when clicking nav links
-        navMenu.querySelectorAll('.nav-link').forEach(link => {
-          link.addEventListener('click', () => {
-            menuToggle.classList.remove('active');
-            navMenu.classList.remove('active');
-            menuToggle.setAttribute('aria-expanded', 'false');
-            document.body.classList.remove('menu-open');
-          });
-        });
-      }
-
-      // Connect auth nav button to auth modal
-      const authNavBtn = document.getElementById('authNavBtn');
-      const authNavLabel = document.getElementById('authNavLabel');
-      
-      if (authNavBtn) {
-        authNavBtn.addEventListener('click', () => {
-          const showAuthBtn = document.getElementById('showAuthBtn');
-          const logoutBtn = document.getElementById('logoutBtn');
-          
-          if (showAuthBtn && !showAuthBtn.closest('.hidden')) {
-            showAuthBtn.click();
-          } else if (logoutBtn && !logoutBtn.closest('.hidden')) {
-            logoutBtn.click();
-          }
-        });
-
-        // Update label based on auth state
-        const observer = new MutationObserver(() => {
-          const userInfo = document.getElementById('userInfo');
-          if (userInfo && !userInfo.classList.contains('hidden')) {
-            authNavLabel.textContent = 'Sign Out';
-          } else {
-            authNavLabel.textContent = 'Sign In';
-          }
-        });
-
-        const authStatusBar = document.getElementById('authStatusBar');
-        if (authStatusBar) {
-          observer.observe(authStatusBar, { 
-            attributes: true, 
-            childList: true, 
-            subtree: true 
-          });
-        }
-      }
-    });
-
-    // Navigation functions
     function openTracker() {
       window.location.href = 'tracker.html';
     }
@@ -557,8 +652,6 @@
       }
     }
 
-    
-
     // Footer links
     function showAbout() {
       if (typeof modal !== 'undefined') {
@@ -595,60 +688,25 @@
         );
       }
     }
-  </script>
-  <script>
-// Modal close fix
-function closeTrailBrowser() {
-  const modal = document.getElementById('trailBrowserModal');
-  if (modal) {
-    modal.classList.add('hidden');
-  }
-}
 
-function openTrailBrowser() {
-  const modal = document.getElementById('trailBrowserModal');
-  if (modal) {
-    modal.classList.remove('hidden');
-  }
-}
-
-// Attach close handlers
-document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('trailBrowserModal');
-  const closeBtn = modal?.querySelector('.modal-close-btn');
-  const backdrop = modal?.querySelector('.modal-backdrop');
-  
-  // Close button
-  if (closeBtn) {
-    closeBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      closeTrailBrowser();
-    });
-  }
-  
-  // Backdrop click
-  if (backdrop) {
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) {
-        closeTrailBrowser();
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('trailBrowserModal');
+        if (modal && !modal.classList.contains('hidden')) {
+          closeTrailBrowser();
+        }
       }
     });
-  }
-  
-  // Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-      closeTrailBrowser();
-    }
-  });
-  
-  // Ensure hidden on load
-  if (modal && !modal.classList.contains('hidden')) {
-    modal.classList.add('hidden');
-  }
-});
-</script>
+
+    // Ensure modal starts hidden
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('trailBrowserModal');
+      if (modal && !modal.classList.contains('hidden')) {
+        modal.classList.add('hidden');
+      }
+    });
+  </script>
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 // Authentication controller with beautiful UI
-import { auth, db } from '../../firebase-setup.js';
+import { auth, db } from '../firebase-setup.js';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,

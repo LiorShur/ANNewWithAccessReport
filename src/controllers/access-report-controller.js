@@ -6,7 +6,7 @@
  * File: src/controllers/access-report-controller.js
  */
 
-import { auth, db } from '../../firebase-setup.js';
+import { auth, db } from '../firebase-setup.js';
 import { 
   collection, 
   addDoc, 

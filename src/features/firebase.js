@@ -1,5 +1,5 @@
 // FIXED: Firebase operations with v10 modular SDK
-import { auth, db, storage } from '../../firebase-setup.js';
+import { auth, db, storage } from '../firebase-setup.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js';
 import { 
   collection, 

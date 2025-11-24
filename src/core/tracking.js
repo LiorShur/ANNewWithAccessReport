@@ -594,7 +594,7 @@ async generateTrailGuide(routeId, routeData, routeInfo, accessibilityData, authC
     
     // Import Firestore and save trail guide
     const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js");
-    const { db } = await import('../../firebase-setup.js');
+    const { db } = await import('../firebase-setup.js');
     
     const guideRef = await addDoc(collection(db, 'trail_guides'), trailGuideDoc);
     
@@ -613,7 +613,7 @@ async saveRouteToCloud(routeData, routeInfo, accessibilityData, authController) 
     
     // Import Firestore functions
     const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js");
-    const { db } = await import('../../firebase-setup.js');
+    const { db } = await import('../firebase-setup.js');
     
     const user = authController.getCurrentUser();
     if (!user) {
@@ -677,7 +677,7 @@ async saveRouteToCloud(routeData, routeInfo, accessibilityData, authController) 
     
     // Import Firestore functions
     const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js");
-    const { db } = await import('../../firebase-setup.js');
+    const { db } = await import('../firebase-setup.js');
     
     const user = authController.getCurrentUser();
     if (!user) {

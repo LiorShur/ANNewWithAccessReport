@@ -6,235 +6,233 @@
   <title>Accessibility Reports - Access Nature</title>
   <meta name="description" content="View and report accessibility barriers in outdoor spaces and urban areas">
   
+  <!-- Unified Design System -->
+  <link rel="stylesheet" href="access-nature-design-system.css">
+  
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  
-  <!-- Leaflet MarkerCluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    /* Page-specific styles */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #1f2937;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     }
 
-    /* Header */
-    .header {
-      background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #667eea;
-      text-decoration: none;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: #4b5563;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: #667eea;
-    }
-
-    /* Main Container */
-    .container {
-      max-width: 1400px;
+    .page-container {
+      max-width: var(--max-width-2xl);
       margin: 0 auto;
-      padding: 2rem;
+      padding: var(--space-xl);
     }
 
-    /* Page Header */
     .page-header {
       background: white;
-      border-radius: 16px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow-lg);
     }
 
     .page-header h1 {
-      font-size: 2rem;
-      color: #1f2937;
-      margin-bottom: 0.5rem;
+      font-size: var(--font-size-4xl);
+      color: var(--text-color);
+      margin-bottom: var(--space-sm);
     }
 
     .page-header p {
-      color: #6b7280;
-      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-size: var(--font-size-lg);
+      margin: 0;
+    }
+
+    /* CRITICAL: Report Modal Fix */
+    #reportDetailModal {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      z-index: 10000 !important; /* Higher than everything */
+      background: rgba(0, 0, 0, 0.5) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: var(--space-md);
+    }
+
+    #reportDetailModal.hidden {
+      display: none !important;
+    }
+
+    #reportDetailModal .modal-content {
+      background: white;
+      border-radius: var(--radius-xl);
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      z-index: 10001 !important;
+    }
+
+    /* Report Timeline Cards */
+    .report-card {
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .report-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    /* Force modal to be visible */
+.modal-backdrop,
+[id^="modal-"],
+[id*="modal"],
+[class*="modal"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure high z-index above everything */
+.modal-backdrop,
+[id^="modal-"] {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+/* Lower map z-index */
+#reportMap,
+.map-section,
+.leaflet-container {
+  z-index: 1 !important;
+}
+
+/* Ensure modal content is visible */
+.modal-content,
+[class*="modal-content"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 1000000 !important;
+}
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: var(--font-size-4xl);
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: var(--space-sm);
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     /* Filters Section */
     .filters-section {
       background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      box-shadow: var(--shadow-md);
+    }
+
+    .filters-title {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
     }
 
     .filters-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .filter-group label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    .filter-group select,
-    .filter-group input {
-      padding: 0.5rem;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      transition: border-color 0.2s;
-    }
-
-    .filter-group select:focus,
-    .filter-group input:focus {
-      outline: none;
-      border-color: #667eea;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
     }
 
     .filter-actions {
       display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-primary {
-      background: #667eea;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #5568d3;
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: #f3f4f6;
-      color: #374151;
-    }
-
-    .btn-secondary:hover {
-      background: #e5e7eb;
-    }
-
-    /* Main Content Grid */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
+      gap: var(--space-md);
+      flex-wrap: wrap;
     }
 
     /* Map Section */
     .map-section {
       background: white;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      position: relative;
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--space-xl);
     }
 
     .map-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
+      gap: var(--space-md);
     }
 
     .map-header h2 {
-      font-size: 1.25rem;
-      color: #1f2937;
+      font-size: var(--font-size-2xl);
+      margin: 0;
     }
 
     .map-controls {
       display: flex;
-      gap: 0.5rem;
+      gap: var(--space-sm);
     }
 
     .map-control-btn {
-      padding: 0.5rem;
-      background: #f3f4f6;
+      width: 44px;
+      height: 44px;
+      background: var(--bg-secondary);
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: all 0.2s;
-      font-size: 1.25rem;
-      width: 40px;
-      height: 40px;
+      font-size: var(--font-size-xl);
+      transition: all var(--transition-fast);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .map-control-btn:hover {
-      background: #e5e7eb;
-      transform: translateY(-1px);
-    }
-
-    .map-control-btn.active {
-      background: #667eea;
+      background: var(--primary-color);
       color: white;
+      transform: translateY(-2px);
     }
 
     #reportMap {
       height: 500px;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 100%;
     }
 
     #reportMap.fullscreen {
@@ -243,7 +241,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 10000;
+      z-index: var(--z-modal);
       height: 100vh !important;
       width: 100vw !important;
       max-width: none;
@@ -254,163 +252,146 @@
     /* Timeline Section */
     .timeline-section {
       background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-md);
     }
 
     .timeline-section h2 {
-      font-size: 1.25rem;
-      color: #1f2937;
-      margin-bottom: 1rem;
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--space-lg);
     }
 
-    #reportTimeline {
-      /* Timeline styles handled by JS */
-    }
-
-    /* Stats Section */
-    .stats-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .stat-card .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #667eea;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-card .stat-label {
-      color: #6b7280;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-
-    /* Report Button */
+    /* Floating Action Button */
     .report-fab {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 60px;
-      height: 60px;
-      background: #ef4444;
+      bottom: var(--space-2xl);
+      right: var(--space-2xl);
+      width: 64px;
+      height: 64px;
+      background: var(--error-color);
       color: white;
       border: none;
-      border-radius: 50%;
+      border-radius: var(--radius-full);
       font-size: 2rem;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-      transition: all 0.2s;
-      z-index: 999;
+      box-shadow: var(--shadow-xl);
+      transition: all var(--transition-base);
+      z-index: var(--z-fixed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .report-fab:hover {
       transform: scale(1.1);
-      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
-    }
-
-    /* Loading Overlay */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-
-    .loading-overlay.hidden {
-      display: none;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid #e5e7eb;
-      border-top-color: #667eea;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
     }
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
-      .container {
-        padding: 1rem;
+      .page-container {
+        padding: var(--space-md);
       }
 
       .page-header {
-        padding: 1.5rem;
+        padding: var(--space-lg);
       }
 
       .page-header h1 {
-        font-size: 1.5rem;
+        font-size: var(--font-size-3xl);
       }
 
       .filters-grid {
         grid-template-columns: 1fr;
       }
 
-      .nav-links {
-        gap: 1rem;
+      .filter-actions {
+        flex-direction: column;
       }
 
-      .report-fab {
-        bottom: 1rem;
-        right: 1rem;
+      .filter-actions .btn {
+        width: 100%;
       }
 
       #reportMap {
         height: 400px;
+      }
+
+      .report-fab {
+        bottom: var(--space-lg);
+        right: var(--space-lg);
+        width: 56px;
+        height: 56px;
       }
     }
   </style>
 </head>
 <body>
   <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay">
+  <div id="loadingOverlay" class="loading-overlay hidden">
     <div class="spinner"></div>
   </div>
 
-  <!-- Header -->
-  <header class="header">
-    <a href="index.html" class="logo">♿ Access Nature</a>
-    <nav class="nav-links">
-      <a href="tracker.html">Track Routes</a>
-      <a href="reports.html" style="color: #667eea; font-weight: 700;">Reports</a>
-      <a href="index.html#guides">Trail Guides</a>
-      <button id="authBtn" class="btn btn-primary">Sign In</button>
-    </nav>
-  </header>
+  <!-- Navigation -->
+  <nav class="top-nav" role="navigation">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-brand-icon">🌲</span>
+      <span>Access Nature</span>
+    </a>
+    
+    <button class="menu-toggle" 
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            id="menuToggle">
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    
+    <div class="nav-menu" id="navMenu">
+      <a href="index.html" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a href="tracker.html" class="nav-link">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Track Trail</span>
+      </a>
+      <a href="reports.html" class="nav-link active">
+        <span class="nav-icon">⚠️</span>
+        <span class="nav-label">Reports</span>
+      </a>
+      <a href="routes.html" class="nav-link">
+        <span class="nav-icon">📂</span>
+        <span class="nav-label">My Routes</span>
+      </a>
+      <a href="accessibility.html" class="nav-link">
+        <span class="nav-icon">♿</span>
+        <span class="nav-label">Survey</span>
+      </a>
+      <a href="profile.html" class="nav-link">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </a>
+      
+      <div class="nav-auth">
+        <button id="authBtn" class="btn btn-primary">Sign In</button>
+      </div>
+    </div>
+  </nav>
 
-  <div class="container">
+  <div class="page-container">
     <!-- Page Header -->
     <div class="page-header">
-      <h1>♿ Accessibility Reports</h1>
+      <h1>⚠️ Accessibility Reports</h1>
       <p>Report and view accessibility barriers in outdoor spaces and urban areas</p>
     </div>
 
     <!-- Stats Section -->
-    <div class="stats-section">
+    <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-value" id="totalReports">0</div>
         <div class="stat-label">Total Reports</div>
@@ -431,23 +412,26 @@
 
     <!-- Filters Section -->
     <div class="filters-section">
-      <h3 style="margin-bottom: 1rem;">🔍 Filter Reports</h3>
+      <h3 class="filters-title">
+        <span>🔍</span>
+        <span>Filter Reports</span>
+      </h3>
       <div class="filters-grid">
-        <div class="filter-group">
-          <label for="countryFilter">Country</label>
-          <select id="countryFilter">
+        <div class="form-group">
+          <label for="countryFilter" class="form-label">Country</label>
+          <select id="countryFilter" class="form-select">
             <option value="">All Countries</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label for="cityFilter">City</label>
-          <select id="cityFilter">
+        <div class="form-group">
+          <label for="cityFilter" class="form-label">City</label>
+          <select id="cityFilter" class="form-select">
             <option value="">All Cities</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label for="statusFilter">Status</label>
-          <select id="statusFilter">
+        <div class="form-group">
+          <label for="statusFilter" class="form-label">Status</label>
+          <select id="statusFilter" class="form-select">
             <option value="">All Statuses</option>
             <option value="new">New</option>
             <option value="acknowledged">Acknowledged</option>
@@ -455,9 +439,9 @@
             <option value="resolved">Resolved</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label for="severityFilter">Severity</label>
-          <select id="severityFilter">
+        <div class="form-group">
+          <label for="severityFilter" class="form-label">Severity</label>
+          <select id="severityFilter" class="form-select">
             <option value="">All Severities</option>
             <option value="critical">Critical</option>
             <option value="high">High</option>
@@ -479,29 +463,26 @@
       </div>
     </div>
 
-    <!-- Content Grid -->
-    <div class="content-grid">
-      <!-- Map Section -->
-      <div class="map-section">
-        <div class="map-header">
-          <h2>🗺️ Report Map</h2>
-          <div class="map-controls">
-            <button class="map-control-btn" id="centerMapBtn" title="Center on my location">
-              📍
-            </button>
-            <button class="map-control-btn" id="fullscreenBtn" title="Toggle fullscreen">
-              ⛶
-            </button>
-          </div>
+    <!-- Map Section -->
+    <div class="map-section">
+      <div class="map-header">
+        <h2>🗺️ Report Map</h2>
+        <div class="map-controls">
+          <button class="map-control-btn" id="centerMapBtn" title="Center on my location">
+            📍
+          </button>
+          <button class="map-control-btn" id="fullscreenBtn" title="Toggle fullscreen">
+            ⛶
+          </button>
         </div>
-        <div id="reportMap"></div>
       </div>
+      <div id="reportMap"></div>
+    </div>
 
-      <!-- Timeline Section -->
-      <div class="timeline-section">
-        <h2>📋 Recent Reports</h2>
-        <div id="reportTimeline"></div>
-      </div>
+    <!-- Timeline Section -->
+    <div class="timeline-section">
+      <h2>📋 Recent Reports</h2>
+      <div id="reportTimeline"></div>
     </div>
   </div>
 
@@ -510,43 +491,69 @@
     ⚠️
   </button>
 
+  <!-- Report Detail Modal -->
+  <div id="reportDetailModal" class="hidden">
+    <div class="modal-content">
+      <!-- Dynamically populated by access-report-main.js -->
+    </div>
+  </div>
+
   <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js';
-    import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js';
-
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAmsm916Lzp0MUXANq3SECO4ec7q1H0Vu4", // Replace with your actual key
-  authDomain: "accessnaturebeta-821a2.firebaseapp.com",
-  projectId: "accessnaturebeta-821a2",
-  storageBucket: "accessnaturebeta-821a2.appspot.com",
-  messagingSenderId: "670888101781",
-  appId: "1:670888101781:web:b4cf57f58e86182466589c",
-  measurementId: "G-QL82J92CP7"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Make available globally
-    window.firebaseApp = app;
-    window.firebaseAuth = auth;
-    window.firebaseDb = db;
-
-    console.log('🔥 Firebase initialized');
-  </script>
+  <script type="module" src="src/firebase-setup.js"></script>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
+  <!-- Universal Navigation & Auth -->
+  <script src="universal-navigation.js"></script>
+  <script src="auth-status-handler.js"></script>
+
   <!-- App Scripts -->
-  <script type="module" src="firebase-setup.js"></script>
+
   <script type="module" src="src/helpers/toasts.js"></script>
   <script type="module" src="src/helpers/modals.js"></script>
   <script type="module" src="reports-page.js"></script>
+
+  <!-- Report Modal Fix Script -->
+  <script>
+    // Ensure modal works correctly
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🔧 Setting up report modal handlers...');
+      
+      // Close modal when clicking backdrop
+      document.addEventListener('click', (e) => {
+        const modal = document.getElementById('reportDetailModal');
+        if (modal && e.target === modal && !modal.classList.contains('hidden')) {
+          console.log('🚪 Closing modal via backdrop click');
+          modal.classList.add('hidden');
+        }
+      });
+      
+      // Close modal on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const modal = document.getElementById('reportDetailModal');
+          if (modal && !modal.classList.contains('hidden')) {
+            console.log('🚪 Closing modal via Escape key');
+            modal.classList.add('hidden');
+          }
+        }
+      });
+      
+      // Prevent click propagation on modal content
+      const modal = document.getElementById('reportDetailModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          const content = modal.querySelector('.modal-content');
+          if (content && content.contains(e.target)) {
+            e.stopPropagation();
+          }
+        });
+      }
+      
+      console.log('✅ Report modal handlers ready');
+    });
+  </script>
 </body>
 </html>
